@@ -21,10 +21,10 @@ class ImagerProfile(models.Model):
     """Create imager-specific user profile."""
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    location = models.CharField(max_length=50)
-    age = models.IntegerField()
-    job = models.CharField(max_length=50)
-    website = models.URLField()
+    location = models.CharField(max_length=50, default='Seattle')
+    age = models.IntegerField(null=True)
+    job = models.CharField(max_length=50, default='')
+    website = models.URLField(null=True)
     objects = models.Manager()
     active = ProfileManager()
 
@@ -47,5 +47,6 @@ class ImagerProfile(models.Model):
 def make_profile_for_new_user(sender, **kwargs):
     """."""
     if kwargs['created']:
-        new_profile = ImagerProfile(user=kwargs['instance'])
+        new_profile = ImagerProfile(
+            user=kwargs['instance'])
         new_profile.save()
