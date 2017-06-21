@@ -18,5 +18,5 @@ before_script:
   - psql -c "create database test_db;" -U postgres
 
 script: 
-  - python imager_site/manage.py migrate
-  - python imager_site/manage.py test imagersite
+  - python imagersite/manage.py migrate
+  - python imagersite/manage.py test imagersite
