@@ -9,14 +9,14 @@ install:
 # command to run tests
 
 env:
-  - SECRET_KEY='cakecake' DATABASE_NAME='test_db' DATABASE_USER='postgres' DATABASE_HOST="127.0.0.1" DATABASE_PASSWORD=''
+  - SECRET_KEY='cakecake' DATABASE_NAME='test_database' DATABASE_USER='postgres' DATABASE_HOST="127.0.0.1" DATABASE_PASSWORD=''
 
 services:
   - postgresql
 
 before_script:
-  - psql -c "CREATE DATABASE test_db;" -U postgres
+  - psql -c "CREATE DATABASE test_database;" -U postgres
 
 script: 
-  - python imagersite/manage.py migrate --noinput
+  - python imagersite/manage.py migrate
   - python imagersite/manage.py test imager_profile
