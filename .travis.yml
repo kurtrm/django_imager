@@ -20,3 +20,4 @@ before_script:
 script: 
   - python imagersite/manage.py migrate
   - python imagersite/manage.py test imager_profile
+  - python imagersite/manage.py test imagersite
