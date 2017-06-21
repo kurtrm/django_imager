@@ -9,7 +9,7 @@ install:
 # command to run tests
 
 env:
-  - SECRET_KEY='mashedpotatoes' DATABASE_NAME='test_db' DATABASE_USER='postgres' DATABASE_HOST="127.0.0.1" DATABASE_PASSWORD=''
+  - SECRET_KEY='cakecake' DATABASE_NAME='test_db' DATABASE_USER='postgres' DATABASE_HOST="127.0.0.1" DATABASE_PASSWORD=''
 
 services:
   - postgresql
@@ -18,5 +18,5 @@ before_script:
   - psql -c "create database test_db;" -U postgres
 
 script: 
-  - python django_imager/manage.py migrate
-  - python django_imager/manage.py test django_imager
+  - python imager_site/manage.py migrate
+  - python imager_site/manage.py test imagersite
