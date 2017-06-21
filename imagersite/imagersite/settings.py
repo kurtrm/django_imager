@@ -1,3 +1,4 @@
+
 """
 Django settings for imagersite project.
 
@@ -28,6 +29,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+ACCOUNT_ACTIVATION_DAYS = 7
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Application definition
 
@@ -40,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'imager_profile',
     'imagersite',
+    'registration'
 ]
 
 MIDDLEWARE = [
