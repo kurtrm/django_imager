@@ -12,7 +12,7 @@ import factory
 class Registration(TestCase):
     """Tests for registration process."""
 
-    def client_setup(self):
+    def setUp(self):
         """Create a client instance."""
         self.client = Client()
 
