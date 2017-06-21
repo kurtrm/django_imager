@@ -33,7 +33,7 @@ class ImagerProfile(models.Model):
         """."""
         return self.user.is_active
 
-    def __repr__(self):
+    def __str__(self):
         """."""
         return """
         username: {}

@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/kurtrm/django_imager.svg?branch=models-1)](https://travis-ci.org/kurtrm/django_imager)
+
 ## Django Imager
 
 An image-sharing app built on Django.
