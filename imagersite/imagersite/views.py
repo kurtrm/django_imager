@@ -8,6 +8,7 @@ from django.contrib.auth.forms import UserCreationForm
 
 def home_view(request):
     """View for the home page."""
+    # import pdb; pdb.set_trace()
     return render(
         request,
         'imagersite/home.html',

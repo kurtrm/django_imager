@@ -2,7 +2,6 @@
 from django.test import TestCase, Client, RequestFactory
 from django.urls import reverse
 from django.contrib.auth.models import User
-from imager_profile.models import ImagerProfile
 from django.core import mail
 from bs4 import BeautifulSoup
 from imagersite.views import home_view
@@ -95,7 +94,56 @@ class LoginLogout(TestCase):
 
     def test_home_view_returns_status_code_200(self):
         """Test home view has status 200."""
-        # import pdb; pdb.set_trace()
         get_req = self.req_factory.get('/')
         response = home_view(get_req)
         self.assertTrue(response.status_code == 200)
+
+    def test_unauthenticated_user_sees_login(self):
+        """Unauthenticated user sees login button on home route."""
+        response = self.client.get(reverse('home'))
+        self.assertTrue(b'login' in response.content.lower())
+
+    def test_authenticated_user_sees_logout(self):
+        """Authenticated user sees logout button on home route."""
+        test_user = User(username='morgan')
+        test_user.set_password('helloiammorgan')
+        test_user.save()
+        self.client.post(reverse('login'), {'username': 'morgan', 'password': 'helloiammorgan'})
+        response = self.client.get(reverse('home'))
+        self.assertFalse(b'login' in response.content.lower())
+        self.assertTrue(b'logout' in response.content.lower())
+
+    def test_if_user_is_authenticated_and_logsout_theyre_no_longer_authenticated(self):
+        """Test authenticated user logs out and sees login button."""
+        test_user = User(username='morgan')
+        test_user.set_password('helloiammorgan')
+        test_user.save()
+        self.client.post(reverse('login'), {'username': 'morgan', 'password': 'helloiammorgan'})
+        response = self.client.get(reverse('logout'), follow=True)
+        self.assertTrue(b'login' in response.content.lower())
+
+    def test_authenticated_user_name_on_home(self):
+        """Test authenticated user's name shows up on home."""
+        test_user = User(username='morgan')
+        test_user.set_password('helloiammorgan')
+        test_user.save()
+        self.client.post(reverse('login'), {'username': 'morgan', 'password': 'helloiammorgan'})
+        response = self.client.get(reverse('home'))
+        self.assertTrue(b'morgan' in response.content.lower())
+
+    def test_logged_out_user_name_not_on_home(self):
+        """Test logging user in and logging user out has user name on home page."""
+        test_user = User(username='morgan')
+        test_user.set_password('helloiammorgan')
+        test_user.save()
+        self.client.post(reverse('login'), {'username': 'morgan', 'password': 'helloiammorgan'})
+        response = self.client.get(reverse('logout'), follow=True)
+        self.assertFalse(b'morgan' in response.content.lower())
+
+    def test_successful_login_reroutes(self):
+        """Test successful login reroutes to home page."""
+        test_user = User(username='morgan')
+        test_user.set_password('helloiammorgan')
+        test_user.save()
+        response = self.client.post(reverse('login'), {'username': 'morgan', 'password': 'helloiammorgan'}, follow=True)
+        self.assertTrue(response.request['PATH_INFO'] == '/')

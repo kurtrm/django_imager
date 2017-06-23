@@ -1,0 +1,13 @@
+[run]
+omit = 
+    */migrations/*,
+    */tests.py
+    manage.py
+    lending_library/wsgi.py
+
+source =
+    lending_library
+    patronprofile
+
+[report]
+show_missing = True

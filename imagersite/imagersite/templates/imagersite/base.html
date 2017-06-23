@@ -4,6 +4,12 @@
     <title>Django Imager</title>
 </head>
 <body>
+    <header>
+        <nav>
+            {% block login %}
+            {% endblock %}
+        </nav>
+    </header>
     <h1>Django Imager</h1>
     {% block content %}
     {% endblock %}
