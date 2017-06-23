@@ -1,0 +1,22 @@
+language: python
+python:
+  - "2.7"
+  - "3.6"
+# command to install dependencies
+install:
+  - pip install --upgrade pip
+  - pip install -r requirements.pip
+# command to run tests
+
+env:
+  - SECRET_KEY='cakecake' DATABASE_NAME='test_database' DATABASE_USER='postgres' DATABASE_HOST="127.0.0.1" DATABASE_PASSWORD=''
+
+services:
+  - postgresql
+
+before_script:
+  - psql -c "CREATE DATABASE test_database;" -U postgres
+
+script: 
+  - python imagersite/manage.py migrate
+  - python imagersite/manage.py test imager_profile
