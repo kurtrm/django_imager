@@ -23,4 +23,6 @@ traitlets==4.3.2
 wcwidth==0.1.7
 coveralls
 python-coveralls
+pytest
+pytest-cov
 
