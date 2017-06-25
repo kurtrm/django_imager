@@ -6,6 +6,7 @@ python:
 install:
   - pip install --upgrade pip
   - pip install -r requirements.pip
+  - pip install coveralls
 # command to run tests
 
 env:
@@ -19,4 +20,7 @@ before_script:
 
 script: 
   - python imagersite/manage.py migrate
-  - python imagersite/manage.py test imager_profile
+  - coverage run --source='imager_profile' imagersite/manage.py test imager_profile
+  - coverage run --source='imagersite' imagersite/manage.py test imagersite
+after_success:
+  - coveralls
