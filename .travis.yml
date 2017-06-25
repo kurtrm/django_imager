@@ -24,4 +24,3 @@ script:
   - coverage run --source='imagersite' imagersite/manage.py test imagersite
 after_success:
   - coveralls
-repo_token: JDEwVLSa8u1ofS6vIt2AJFqch3LCUsavF
