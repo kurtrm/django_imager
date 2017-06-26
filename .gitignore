@@ -103,5 +103,5 @@ ENV/
 # DS_Store
 *.DS_Store
 
-media
+media/*
 !media/.gitkeep

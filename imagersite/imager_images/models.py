@@ -1,8 +1,6 @@
 """."""
 from django.db import models
 from django.contrib.auth.models import User
-from django.dispatch import receiver
-from django.db.models.signals import post_save
 from django.utils.encoding import python_2_unicode_compatible
 
 
@@ -17,9 +15,9 @@ class Photo(models.Model):
 
     title = models.CharField(max_length=100, default='')
     description = models.CharField(max_length=255, default='')
-    date_uploaded = models.DateTimeField(auto_now=True)
+    date_uploaded = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
-    date_published = models.DateTimeField(auto_now=True)
+    date_published = models.DateTimeField(null=True)
     published = models.CharField(
         max_length=2,
         choices=PUBLISHED_STATUS,
@@ -49,9 +47,9 @@ class Album(models.Model):
 
     title = models.CharField(max_length=100, default='')
     description = models.CharField(max_length=255, default='')
-    date_created = models.DateTimeField(auto_now=True)
+    date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
-    date_published = models.DateTimeField(auto_now=True)
+    date_published = models.DateTimeField(null=True)
     published = models.CharField(
         max_length=2,
         choices=PUBLISHED_STATUS,
@@ -60,10 +58,15 @@ class Album(models.Model):
         User,
         null=False,
         on_delete=models.CASCADE)
+    photo = models.ManyToManyField(
+        Photo,
+        null=True,
+        default='',
+        related_name='albums')
     cover = models.ForeignKey(
         Photo,
         null=True,
-        default='')
+        related_name='+')
 
     def __repr__(self):
         """Represent."""
