@@ -91,6 +91,29 @@ class PhotoTestCases(TestCase):
         name = self.photo.photo.name.split('/')[1]
         self.assertTrue(name in directory_contents)
 
+    def test_can_change_uploaded_photo_privacy_setting(self):
+        """."""
+        self.photo.published = 'PB'
+        self.assertEqual(self.photo.published, 'PB')
+
+    def test_upload_with_different_privacy_setting(self):
+        """."""
+        photo = PhotoFactory.build()
+        photo.user = self.user
+        photo.published = 'PB'
+        photo.save()
+        self.photo1 = photo
+        self.assertEqual(self.photo1.published, 'PB')
+
+    def test_upload_with_shared_privacy_setting(self):
+        """."""
+        photo = PhotoFactory.build()
+        photo.user = self.user
+        photo.published = 'SH'
+        photo.save()
+        self.photo1 = photo
+        self.assertEqual(self.photo1.published, 'SH')
+
 
 class AlbumsTestCase(TestCase):
     """."""
@@ -105,17 +128,18 @@ class AlbumsTestCase(TestCase):
         user.save()
         self.user = user
 
-        photo = [PhotoFactory.build() for i in range(20)]
-        for phot in photo:
-            phot.user = user
-            phot.save()
+        photos = [PhotoFactory.build() for i in range(20)]
+        for photo in photos:
+            photo.user = user
+            photo.save()
 
         albums = [AlbumFactory.build() for i in range(5)]
         for idx, album in enumerate(albums):
             album.user = user
             album.save()
-            album.photo.add(photo[idx])
-            album.cover = photo[idx]
+            album.photo.add(photos[idx])
+            album.cover = photos[idx]
+        self.albums = albums
 
     def test_delete_user_with_albums_albums_delete(self):
         """."""
@@ -123,8 +147,23 @@ class AlbumsTestCase(TestCase):
         self.user.delete()
         self.assertEqual(Album.objects.count(), 0)
 
-# check uploaded photos in media/user_photos
-# create photo with PB or SH choice
-# update photo and overwrite default PV choice
-# create album with PB or SH choice
-# update album and overwrite default PV choice
+    def test_update_album_pv_choice(self):
+        """."""
+        self.albums[0].published = 'SH'
+        self.assertEqual(self.albums[0].published, 'SH')
+
+    def test_upload_with_different_privacy_setting(self):
+        """."""
+        album = AlbumFactory.build()
+        album.user = self.user
+        album.published = 'PB'
+        album.save()
+        self.assertEqual(album.published, 'PB')
+
+    def test_upload_with_shared_privacy_setting(self):
+        """."""
+        album = AlbumFactory.build()
+        album.user = self.user
+        album.published = 'SH'
+        album.save()
+        self.assertEqual(album.published, 'SH')

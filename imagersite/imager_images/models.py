@@ -58,7 +58,7 @@ class Album(models.Model):
         User,
         null=False,
         on_delete=models.CASCADE)
-    photo = models.ManyToManyField(
+    photos = models.ManyToManyField(
         Photo,
         default='',
         related_name='albums')
