@@ -137,7 +137,7 @@ class AlbumsTestCase(TestCase):
         for idx, album in enumerate(albums):
             album.user = user
             album.save()
-            album.photo.add(photos[idx])
+            album.photos.add(photos[idx])
             album.cover = photos[idx]
         self.albums = albums
 
