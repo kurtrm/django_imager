@@ -29,7 +29,7 @@ class PhotoFactory(factory.django.DjangoModelFactory):
         lambda n: 'Photo{}'.format(n)
     )
     description = fake.text(254)
-    date_modiffied = datetime.datetime.now()
+    date_modified = datetime.datetime.now()
     photo = SimpleUploadedFile(
         name='example.jpg',
         content=open(os.path.join(
@@ -105,17 +105,17 @@ class AlbumsTestCase(TestCase):
         user.save()
         self.user = user
 
-        photos = [PhotoFactory.build() for i in range(20)]
-        for photo in photos:
-            photo.user = user
-            photo.save()
+        photo = [PhotoFactory.build() for i in range(20)]
+        for phot in photo:
+            phot.user = user
+            phot.save()
 
         albums = [AlbumFactory.build() for i in range(5)]
         for idx, album in enumerate(albums):
             album.user = user
-            album.photos.add(photos[idx])
             album.save()
-            album.cover = photos[idx]
+            album.photo.add(photo[idx])
+            album.cover = photo[idx]
 
     def test_delete_user_with_albums_albums_delete(self):
         """."""
@@ -128,6 +128,3 @@ class AlbumsTestCase(TestCase):
 # update photo and overwrite default PV choice
 # create album with PB or SH choice
 # update album and overwrite default PV choice
-
-
-

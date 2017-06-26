@@ -60,7 +60,6 @@ class Album(models.Model):
         on_delete=models.CASCADE)
     photo = models.ManyToManyField(
         Photo,
-        null=True,
         default='',
         related_name='albums')
     cover = models.ForeignKey(
