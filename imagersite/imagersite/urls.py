@@ -19,6 +19,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from imagersite.views import home_view
+from imager_profile.views import profile_view
 
 urlpatterns = [
     url(r'^$', home_view, name='home'),
@@ -26,10 +27,14 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^login/$', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
     url(r'^logout/$', auth_views.LogoutView.as_view(template_name='imagersite/home.html'), name='logout'),
+    url(r'^profile/$', profile_view, name='profile')
     # url(r'^', include('django.contrib.auth.urls')),
 ]
 
 if settings.DEBUG:
     urlpatterns += static(
         settings.STATIC_URL, document_root=settings.STATIC_ROOT
+    )
+    urlpatterns += static(
+        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
     )

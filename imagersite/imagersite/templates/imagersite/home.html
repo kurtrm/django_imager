@@ -18,5 +18,9 @@
 {% block content %}
     {{ content }}
     <p>Long-tail big data The Cloud iterative buzzword. Gen Y cross-device drone engagement. Emerging ROI social buttons verticals hit the like button. Top influencers vertical-specific viral pivot alignment. Click-through rate reaching out ideation The Cloud hashtag organic reach. Branding top influencers cross-device. Pass the clap iterative cross-device omnichannel target influencer top influencers. Flat design SEO synergies conversions B2B millennials reaching out.</p>
+    {% if image %}
+    <img src="{{ image }}" />
+    {% else %}
     <img src="{% static '/assets/jerry-kiesewetter-192478.jpg' %}" />
+    {% endif %}
 {% endblock %}
