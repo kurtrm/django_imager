@@ -6,7 +6,6 @@ python:
 install:
   - pip install --upgrade pip
   - pip install -r requirements.pip
-  - pip install coveralls
 # command to run tests
 
 env:
