@@ -7,7 +7,6 @@ install:
   - pip install --upgrade pip
   - pip install -r requirements.pip
 # command to run tests
-
 env:
   - SECRET_KEY='cakecake' DATABASE_NAME='test_database' DATABASE_USER='postgres' DATABASE_HOST="127.0.0.1" DATABASE_PASSWORD=''
 

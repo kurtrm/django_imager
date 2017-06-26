@@ -3,11 +3,12 @@ omit =
     */migrations/*,
     */tests.py
     manage.py
-    lending_library/wsgi.py
+    imagersite/wsgi.py
 
 source =
-    lending_library
-    patronprofile
+    imagersite
+    imager_profile
+    imager_images
 
 [report]
 show_missing = True
