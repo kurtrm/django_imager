@@ -22,5 +22,6 @@ script:
   - python imagersite/manage.py migrate
   - coverage run --source='imager_profile' imagersite/manage.py test imager_profile
   - coverage run --source='imagersite' imagersite/manage.py test imagersite
+  - coverage run --source='imager_images' imagersite/manage.py test imager_images
 after_success:
   - coveralls
