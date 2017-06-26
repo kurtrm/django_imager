@@ -14,6 +14,9 @@ import os
 fake = faker.Faker()
 
 
+HERE = os.path.dirname(__file__)
+
+
 class PhotoFactory(factory.django.DjangoModelFactory):
     """Factory for creating users."""
 
@@ -26,10 +29,13 @@ class PhotoFactory(factory.django.DjangoModelFactory):
         lambda n: 'Photo{}'.format(n)
     )
     description = fake.text(254)
-    date_modified = datetime.datetime.now()
+    date_modiffied = datetime.datetime.now()
     photo = SimpleUploadedFile(
         name='example.jpg',
-        content=open().read(),
+        content=open(os.path.join(
+            HERE,
+            'static',
+            'jerry-kiesewetter-192478.jpg'), 'rb').read(),
         content_type='image/jpeg')
 
 
@@ -116,3 +122,12 @@ class AlbumsTestCase(TestCase):
         self.assertTrue(Album.objects.count() == 5)
         self.user.delete()
         self.assertEqual(Album.objects.count(), 0)
+
+# check uploaded photos in media/user_photos
+# create photo with PB or SH choice
+# update photo and overwrite default PV choice
+# create album with PB or SH choice
+# update album and overwrite default PV choice
+
+
+
