@@ -1,7 +1,9 @@
 {% extends 'imagersite/base.html' %}
 
 {% block content %}
-{{ username }}
-<p>Photos: {{ photos }}</p>
-<p>Albums: {{ albums }}</p>
+    {% if imager_user %}
+        <p>{{ username }} exists</p>
+    {% else %}
+        <p>user doesn't exist</p>
+    {% endif %}
 {% endblock %} 

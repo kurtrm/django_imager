@@ -25,5 +25,5 @@ def public_profile(request, request_username):
     return render(
         request,
         'imager_profile/public_profile.html',
-        context={'user': imager_profile}
+        context={'imager_user': imager_profile, 'username': request_username}
     )
