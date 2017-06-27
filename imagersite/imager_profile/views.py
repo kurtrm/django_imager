@@ -2,6 +2,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from imager_images.models import Photo, Album
+from django.contrib.auth.models import User
 from imager_profile.models import ImagerProfile
 
 
@@ -17,12 +18,12 @@ def profile_view(request):
     )
 
 
-def public_profile(request, username):
+def public_profile(request, request_username):
     """Display the public profile for a given username."""
-    # user_profile = ImagerProfile.objects.filter(user=username).all()
-    # return render(
-    #     request,
-    #     'imager_profile/public_profile.html',
-    #     context={'user': user_profile}
-    # )
-    pass
+    request_user = User.objects.filter(username=request_username)
+    imager_profile = ImagerProfile.objects.filter(user=request_user)
+    return render(
+        request,
+        'imager_profile/public_profile.html',
+        context={'user': imager_profile}
+    )
