@@ -10,7 +10,7 @@ install:
   - pip install python-coveralls
 # command to run tests
 env:
-  - SECRET_KEY='cakecake' DATABASE_NAME='test_database' DATABASE_USER='postgres' DATABASE_HOST="127.0.0.1" DATABASE_PASSWORD=''
+  - SECRET_KEY='cakecake' DATABASE_NAME='test_database' DATABASE_USER='postgres' DATABASE_HOST="127.0.0.1" DATABASE_PASSWORD='' COVERALLS_REPO_TOKEN='Brs5xrIMmUZN4vkiqDPhOdSMaq6KJAtMs'
 
 services:
   - postgresql
@@ -20,8 +20,6 @@ before_script:
 
 script: 
   - python imagersite/manage.py migrate
-  - coverage run --source='imager_profile' imagersite/manage.py test imager_profile
-  - coverage run -a --source='imagersite' imagersite/manage.py test imagersite
-  - coverage run -a --source='imager_images' imagersite/manage.py test imager_images
+  - coverage run imagersite/manage.py test
 after_success:
   - coveralls
