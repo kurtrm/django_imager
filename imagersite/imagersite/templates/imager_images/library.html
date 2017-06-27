@@ -6,7 +6,7 @@
 <ul>
     {% for photo in photos %}
         <li>{{ photo.title }}</li>
-        {% thumbnail photo.photo.url "100x100" crop="center" as im %}
+        {% thumbnail photo.photo "100x100" crop="center" as im %}
             <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
         {% endthumbnail %}
     {% endfor %}
@@ -16,9 +16,13 @@
     {% for album in albums %}
         <li>{{ album.title }}</li>
         {% if album.cover.photo.url %}
-            <img src={{ album.cover.photo.url }} />
+            {% thumbnail album.cover.photo "100x100" crop="center" as im %}
+                <img src="{{ im.url }}" />
+            {% endthumbnail %}
         {% else %}
-            <img src="{% static '/assets/camera.png' %}" />
+            {% thumbnail photo.photo "100x100" crop="center" as im %}
+                <img src="{% static '/assets/camera.png' %}" />
+            {% endthumbnail %}
         {% endif %}
     {% endfor %}
 </ul>

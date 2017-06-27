@@ -42,11 +42,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'sorl.thumbnail',
     'imager_images',
     'imager_profile',
     'imagersite',
     'registration',
-    'sorl.thumbnail'
 ]
 
 MIDDLEWARE = [
@@ -146,3 +146,5 @@ LOGOUT_REDIRECT_URL = 'home'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+THUMBNAIL_DEBUG = True
