@@ -1,7 +1,11 @@
 [run]
 omit = 
-    */migrations/*,
+    */migrations/*
+    */admin.py
     */tests.py
+    */__init__.py
+    */apps.py
+    imagersite/settings.py
     manage.py
     imagersite/wsgi.py
 
