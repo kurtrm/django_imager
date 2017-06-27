@@ -10,7 +10,7 @@ install:
   - pip install python-coveralls
 # command to run tests
 env:
-  - SECRET_KEY='cakecake' DATABASE_NAME='test_database' DATABASE_USER='postgres' DATABASE_HOST="127.0.0.1" DATABASE_PASSWORD='' COVERALLS_REPO_TOKEN='JDEwVLSa8u1ofS6vIt2AJFqch3LCUsavF'
+  - SECRET_KEY='cakecake' DATABASE_NAME='test_database' DATABASE_USER='postgres' DATABASE_HOST="127.0.0.1" DATABASE_PASSWORD=''
 
 services:
   - postgresql
