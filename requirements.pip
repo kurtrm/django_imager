@@ -17,11 +17,10 @@ prompt-toolkit==1.0.14
 psycopg2==2.7.1
 ptyprocess==0.5.1
 Pygments==2.2.0
-pymemcache==1.4.3
 python-dateutil==2.6.0
 pytz==2017.2
 simplegeneric==0.8.1
 six==1.10.0
-sorl-thumbnail==12.3
+-e git+https://github.com/mariocesar/sorl-thumbnail.git@7ce76bc1ef798a63cbf89b5df83de4da4b12e98d#egg=sorl_thumbnail
 traitlets==4.3.2
 wcwidth==0.1.7

@@ -1,11 +1,14 @@
 {% extends 'imagersite/base.html' %}
 {% load static %}
+{% load thumbnail %}
 {% block content %}
 <p>Photos</p>
 <ul>
     {% for photo in photos %}
         <li>{{ photo.title }}</li>
-        <img src={{ photo.photo.url }} />
+        {% thumbnail photo.photo.url "100x100" crop="center" as im %}
+            <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+        {% endthumbnail %}
     {% endfor %}
 </ul>
 <p>Albums</p>
