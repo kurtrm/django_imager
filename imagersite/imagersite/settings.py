@@ -140,7 +140,7 @@ STATICFILES_DIR = [
     '/var/www/static/'
 ]
 
-LOGIN_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = 'profile'
 LOGOUT_REDIRECT_URL = 'home'
 
 MEDIA_URL = '/media/'

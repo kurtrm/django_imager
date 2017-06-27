@@ -20,6 +20,7 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from imagersite.views import home_view
 from imager_profile.views import profile_view, public_profile
+from imager_images.views import library
 
 urlpatterns = [
     url(r'^$', home_view, name='home'),
@@ -29,6 +30,7 @@ urlpatterns = [
     url(r'^logout/$', auth_views.LogoutView.as_view(template_name='imagersite/home.html'), name='logout'),
     url(r'^profile/$', profile_view, name='profile'),
     url(r'^profile/(?P<request_username>\w+)/$', public_profile, name='public_profile'),
+    url(r'^images/library/$', library, name='library'),
     # url(r'^', include('django.contrib.auth.urls')),
 ]
 

@@ -31,9 +31,9 @@ class Photo(models.Model):
         null=True
     )
 
-    def __repr__(self):
+    def __str__(self):
         """Represent."""
-        return "<Photo: {}>".format(self.title)
+        return "{}".format(self.title)
 
 
 class Album(models.Model):
@@ -65,8 +65,9 @@ class Album(models.Model):
     cover = models.ForeignKey(
         Photo,
         null=True,
+        blank=True,
         related_name='+')
 
-    def __repr__(self):
+    def __str__(self):
         """Represent."""
-        return "<Album: {}>".format(self.title)
+        return "{}".format(self.title)

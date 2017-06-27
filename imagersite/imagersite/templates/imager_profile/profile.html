@@ -2,6 +2,15 @@
 
 {% block content %}
 {{ user.username }}
-<p>You have {{ photos }} photos.</p>
-<p>You have {{ albums }} albums.</p>
+<p>Images</p>
+<ul>
+    <li>Public: {{ photos_pub }}</li>
+    <li>Private: {{ photos_priv }}</li>
+</ul>
+<p>Albums</p>
+<ul>
+    <li>Public: {{ albums_pub }}</li>
+    <li>Private: {{ albums_priv }}</li>
+</ul>
+<a>Visit your library</a>
 {% endblock %} 
