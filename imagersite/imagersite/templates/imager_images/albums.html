@@ -1,0 +1,20 @@
+{% extends 'imagersite/base.html' %}
+{% load static %}
+{% load thumbnail %}
+{% block content %}
+<p>Albums</p>
+<ul>
+    {% for album in albums %}
+        <li>{{ album.title }}</li>
+        {% if album.cover.photo.url %}
+            {% thumbnail album.cover.photo "200x200" crop="center" as im %}
+                <img src="{{ im.url }}" />
+            {% endthumbnail %}
+        {% else %}
+            {% thumbnail photo.photo "200x200" crop="center" as im %}
+                <img src="{% static '/assets/camera.png' %}" />
+            {% endthumbnail %}
+        {% endif %}
+    {% endfor %}
+</ul>
+{% endblock %} 
