@@ -1,7 +1,6 @@
 """Project-level views."""
 from django.shortcuts import render
-from imager_images.models import Photo, Album
-import random
+from imager_images.models import Photo
 
 
 def home_view(request):
@@ -13,7 +12,7 @@ def home_view(request):
         request,
         'imagersite/home.html',
         context={'content': 'cake',
-                 'image': 'Random Image' if not images else random.choice(images)}
+                 'image': images}
     )
 
 

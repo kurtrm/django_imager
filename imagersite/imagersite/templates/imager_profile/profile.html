@@ -4,13 +4,13 @@
 {{ user.username }}
 <p>Images</p>
 <ul>
-    <li>Public: {{ photos_pub }}</li>
-    <li>Private: {{ photos_priv }}</li>
+    <li>Public: {{ photos_pub }} image{{ photos_pub|pluralize }}</li>
+    <li>Private: {{ photos_priv }} image{{ photos_priv|length|pluralize }}</li>
 </ul>
 <p>Albums</p>
 <ul>
-    <li>Public: {{ albums_pub }}</li>
-    <li>Private: {{ albums_priv }}</li>
+    <li>Public: {{ albums_pub }} album{{ albums_pub|pluralize }}</li>
+    <li>Private: {{ albums_priv }} album{{ albums_priv|pluralize }}</li>
 </ul>
 <a>Visit your library</a>
 {% endblock %} 
