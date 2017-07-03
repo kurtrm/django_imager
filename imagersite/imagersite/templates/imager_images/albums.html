@@ -11,8 +11,8 @@
                 <img src="{{ im.url }}" />
             {% endthumbnail %}
         {% else %}
-            {% thumbnail photo.photo "200x200" crop="center" as im %}
-                <img src="{% static '/assets/camera.png' %}" />
+            {% thumbnail "assets/camera.png" "200x200" crop="center" as im %}
+                <img alt="default cover image: camera" src="{{ im.url }}">
             {% endthumbnail %}
         {% endif %}
     {% endfor %}
