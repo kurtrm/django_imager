@@ -58,3 +58,18 @@ class ImagerProfileTestCase(TestCase):
         user.is_active = False
         user.save()
         self.assertEquals(User.objects.count(), ImagerProfile.active.count() + 1)
+
+
+#  profile related tests
+
+# private
+# logged out user redirects to login when trying to access profile
+# logged out user gets 304 when trying to visit profile
+# logged in user gets 200 status when visiting profile
+# logged in user sees accurate info from their account
+# logged in user profile library link is valid
+
+# public
+# logged in and logged out users see same content on public profile
+# public profile displays public albums and photos
+# get request for nonexistent user returns 'user doesn't exist'

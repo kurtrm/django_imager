@@ -2,9 +2,18 @@
 
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import TestCase
+from django.test import TestCase, Client, RequestFactory
 from imager_images.models import Photo, Album
+from bs4 import BeautifulSoup
+from imager_images.views import (
+        library,
+        photos_view,
+        single_photo_view,
+        single_album_view,
+        albums_view
+    )
 import faker
 import datetime
 import factory
@@ -167,3 +176,96 @@ class AlbumsTestCase(TestCase):
         album.published = 'SH'
         album.save()
         self.assertEqual(album.published, 'SH')
+
+# ===== Library View Tests =====
+
+
+class LibraryView(TestCase):
+    """Test library view."""
+
+    def setUp(self):
+        """."""
+        user_1 = User(
+            username='morgan',
+            email='morgan@morgan.com'
+        )
+        user_2 = User(
+            username='kurt',
+            email='kurt@kurt.com'
+        )
+        user_3 = User(
+            username='mcgee',
+            email='mcgee@mcgee.com'
+        )
+        user_1.save()
+        user_2.save()
+        user_3.save()
+        self.user_1 = user_1
+        self.user_2 = user_2
+        self.user_3 = user_3
+
+        photos_1 = [PhotoFactory.build() for i in range(10)]
+        for photo in photos_1:
+            photo.user_1 = user_1
+            photo.published = 'PB'
+            photo.save()
+        photos_1[0].published = 'PV'
+        photos_1.save()
+
+        photos_2 = [PhotoFactory.build() for i in range(10)]
+        for photo in photos_2:
+            photo.user_2 = user_2
+            photo.published = 'PB'
+            photo.save()
+
+        albums = [AlbumFactory.build() for i in range(3)]
+        albums[0].user = user_1
+        albums[0].published = 'PB'
+        albums[0].cover = photos_1[1]
+        albums[1].user = user_2
+        albums[1].cover = photos_2[1]
+        albums[2].user = user_3
+        albums[2].published = 'PB'
+        albums[0].save()
+        albums[1].save()
+        albums[2].save()
+
+        for photo in photos_1:
+            albums[0].photos.add(photo)
+            albums[0].save()
+
+        for photo in photos_2:
+            albums[1].photos.add(photo)
+            albums[0].save()
+
+        self.albums = albums
+        self.client = Client()
+
+    def test_logged_out_user_redirects_code(self):
+        """."""
+        response = self.client.get(reverse('library'))
+        self.assertRedirects(response, '/accounts/login/?next=/images/library/')
+
+    # def test_logged_in_user
+
+# logged in user:
+#  sees all albums-public/private
+#  '' '' '' images-public/private
+#  200 status
+# albums without cover images shows default
+# albums with covers show correct cover
+
+# albums
+# logged in/logged out users see same content
+# public album count is correct
+# albums without cover images shows default
+# albums with covers show correct cover
+
+# album
+# display correct title
+# displays public images
+# album doesn't exist
+
+# images
+# public images count is correct
+# view if no images

@@ -50,9 +50,9 @@ def albums_view(request):
 def single_album_view(request, album_id):
     """View for a single album."""
     album = Album.objects.get(id=album_id)
-    album_photos = [album.photos[i] for i in range(album.photos)]
+    album_photos = album.photos.all()
     return render(
         request,
         'imager_images/album.html',
-        context={'album': album_photos}
+        context={'album': album_photos, 'whole_album': album}
     )
