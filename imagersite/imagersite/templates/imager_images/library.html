@@ -5,7 +5,7 @@
 <p>Photos</p>
 <ul>
     {% for photo in photos %}
-        <li>{{ photo.title }}</li>
+        <li class="photo">{{ photo.title }}</li>
         {% thumbnail photo.photo "100x100" crop="center" as im %}
             <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
         {% endthumbnail %}
@@ -14,7 +14,7 @@
 <p>Albums</p>
 <ul>
     {% for album in albums %}
-        <li>{{ album.title }}</li>
+        <li class="album">{{ album.title }}</li>
         {% if album.cover.photo.url %}
             {% thumbnail album.cover.photo "100x100" crop="center" as im %}
                 <img src="{{ im.url }}" />

@@ -6,7 +6,8 @@ Django==1.11.2
 django-registration==2.2
 factory-boy==2.8.1
 Faker==0.7.17
-ipython
+html5lib==0.999999999
+ipython==6.1.0
 ipython-genutils==0.2.0
 jedi==0.10.2
 olefile==0.44
@@ -24,3 +25,4 @@ six==1.10.0
 -e git+https://github.com/mariocesar/sorl-thumbnail.git@7ce76bc1ef798a63cbf89b5df83de4da4b12e98d#egg=sorl_thumbnail
 traitlets==4.3.2
 wcwidth==0.1.7
+webencodings==0.5.1
