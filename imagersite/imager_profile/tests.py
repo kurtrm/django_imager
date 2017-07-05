@@ -1,8 +1,11 @@
 """Tests for Imager Profile app."""
 
-from django.test import TestCase
+from django.test import TestCase, Client, RequestFactory
 from django.contrib.auth.models import User
 from imager_profile.models import ImagerProfile
+from django.urls import reverse
+from bs4 import BeautifulSoup
+
 
 import factory
 
@@ -63,11 +66,58 @@ class ImagerProfileTestCase(TestCase):
 #  profile related tests
 
 # private
-# logged out user redirects to login when trying to access profile
-# logged out user gets 304 when trying to visit profile
-# logged in user gets 200 status when visiting profile
-# logged in user sees accurate info from their account
-# logged in user profile library link is valid
+class PrivateProfileView(TestCase):
+    """ImagerProfile tests."""
+
+    def setUp(self):
+        """."""
+        user = User(
+            username='morgan',
+            email='morgan@morgan.com'
+        )
+        user.save()
+        self.user = user
+        self.client = Client()
+
+    def test_logged_out_user_redirects(self):
+        """Logged out user redirects to login."""
+        response = self.client.get(reverse('profile'))
+        self.assertRedirects(response, '/accounts/login/?next=/profile/')
+
+    def test_logged_in_user_gets_200_status(self):
+        """Logged in user gets 200 status on profile get."""
+        self.client.force_login(self.user)
+        response = self.client.get(reverse('profile'))
+        self.assertTrue(response.status_code == 200)
+
+    def test_username_appears(self):
+        """Test username displays."""
+        self.client.force_login(self.user)
+        response = self.client.get(reverse('profile'))
+        html = BeautifulSoup(response.content, 'html.parser')
+        username = html.find_all('p', 'username')
+        self.assertIn(self.user.username, username[0])
+
+    def test_link_checks_out(self):
+        """Logged in user goes to their image library."""
+        self.client.force_login(self.user)
+        response = self.client.get(reverse('library'))
+        self.assertTrue(response.status_code == 200)
+
+
+class PublicProfileView(TestCase):
+    """ImagerProfile tests."""
+
+    def setUp(self):
+        """."""
+        users = [UserFactory.create() for i in range(20)]
+
+        for user in users:
+            user.set_password('cake')
+            user.save()
+
+        self.users = users
+
 
 # public
 # logged in and logged out users see same content on public profile
