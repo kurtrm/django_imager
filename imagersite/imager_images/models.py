@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.utils.encoding import python_2_unicode_compatible
 
 
+@python_2_unicode_compatible
 class Photo(models.Model):
     """Create a photo model."""
 
@@ -36,6 +37,7 @@ class Photo(models.Model):
         return "{}".format(self.title)
 
 
+@python_2_unicode_compatible
 class Album(models.Model):
     """Create an album model."""
 
