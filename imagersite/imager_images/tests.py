@@ -417,7 +417,7 @@ class AlbumView(TestCase):
 
     def test_album_displays_correct_number_images(self):
         """Album view displays all published photos belonging to album."""
-        response = self.client.get(reverse('single_album', kwargs={'album_id': 1}))
+        response = self.client.get(reverse('single_album', kwargs={'album_id': b'1'}))
         html = BeautifulSoup(response.content, 'html5lib')
         photos = html.find_all('img')
         album_title = html.find('p', 'album-title').text
