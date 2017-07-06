@@ -337,24 +337,6 @@ class LibraryView(TestCase):
         photos = html.find_all('li', 'photo')
         self.assertEqual(10, len(photos))
 
-    # def test_logged_in_user_library_view_album_cover_image(self):
-    #     """."""
-    #     self.client.force_login(self.user_1)
-    #     response = self.client.get(reverse('library'))
-    #     html = BeautifulSoup(response.content, 'html.parser')
-    #     # import pdb; pdb.set_trace()
-    #     album_cover = html.find('li', 'album').next_sibling.next_sibling
-    #     self.assertTrue(self.photos_1[0].photo.id in str(album_cover))
-
-    # def test_logged_in_user_library_view_album_cover_default(self):
-    #     """."""
-    #     self.client.force_login(self.user_2)
-    #     response = self.client.get(reverse('library'))
-    #     html = BeautifulSoup(response.content, 'html5lib')
-    #     album_cover = html.find('li', 'album').next_sibling.next_sibling
-    #     tags = album_cover.attrs
-    #     self.assertTrue('default cover image: camera' in str(album_cover))
-
 
 class AlbumView(TestCase):
     """Test album views."""
@@ -433,14 +415,7 @@ class AlbumView(TestCase):
         albums = html.find_all('li', 'album')
         self.assertEqual(len(albums), Album.objects.filter(published='PB').count())
 
-    # def test_album_logged_in_logged_out_users_see_same_content(self):
-    #     """."""
-    #     logged_out_response = self.client.get(reverse('single_album', kwargs={'album_id': 1}))
-    #     self.client.force_login(self.user_1)
-    #     logged_in_response = self.client.get(reverse('single_album', kwargs={'album_id': 1}))
-    #     self.assertEqual(logged_out_response.content, logged_in_response.content)
-
-    def test_album_displays_correct_number_images(self):
+   def test_album_displays_correct_number_images(self):
         """Album view displays all published photos belonging to album."""
         response = self.client.get(reverse('single_album', kwargs={'album_id': 1}))
         html = BeautifulSoup(response.content, 'html5lib')
