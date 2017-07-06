@@ -7,7 +7,7 @@ django-registration==2.2
 factory-boy==2.8.1
 Faker==0.7.17
 html5lib==0.999999999
-ipython==6.1.0
+ipython
 ipython-genutils==0.2.0
 jedi==0.10.2
 olefile==0.44
