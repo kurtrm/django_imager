@@ -43,7 +43,7 @@ urlpatterns = [
     url(r'^images/photos/(?P<photo_id>\d+)/$', single_photo_view,
         name='single_photo'),
     url(r'^images/photos/$', photos_view, name='photos'),
-    url(r'^images/albums/(?P<album_id>\d+)/', single_album_view,
+    url(r'^images/albums/(?P<album_id>\d+)/$', single_album_view,
         name='single_album'),
     url(r'^images/albums/$', albums_view, name='albums'),
     # url(r'^', include('django.contrib.auth.urls')),
