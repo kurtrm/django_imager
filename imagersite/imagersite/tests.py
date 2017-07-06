@@ -204,6 +204,5 @@ class LoginLogout(TestCase):
         test_user = User(username='morgan')
         test_user.set_password('helloiammorgan')
         test_user.save()
-        import pdb; pdb.set_trace()
         response = self.client.post(reverse('login'), {'username': 'morgan', 'password': 'helloiammorgan'}, follow=True)
         self.assertTrue(response.request['PATH_INFO'] == '/profile/')
