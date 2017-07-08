@@ -310,32 +310,32 @@ class LibraryView(TestCase):
         self.albums = albums
         self.client = Client()
 
-    # def test_logged_out_user_redirects(self):
-    #     """Logged out user redirects to login."""
-    #     response = self.client.get(reverse('library'))
-    #     self.assertRedirects(response, '/accounts/login/?next=/images/library/')
+    def test_logged_out_user_redirects(self):
+        """Logged out user redirects to login."""
+        response = self.client.get(reverse('library'))
+        self.assertRedirects(response, '/accounts/login/?next=/images/library/')
 
-    # def test_logged_in_user_gets_200_status(self):
-    #     """Logged in user gets 200 status on library get."""
-    #     self.client.force_login(self.user_1)
-    #     response = self.client.get(reverse('library'))
-    #     self.assertTrue(response.status_code == 200)
+    def test_logged_in_user_gets_200_status(self):
+        """Logged in user gets 200 status on library get."""
+        self.client.force_login(self.user_1)
+        response = self.client.get(reverse('library'))
+        self.assertTrue(response.status_code == 200)
 
-    # def test_logged_in_user_library_view_shows_correct_album_count(self):
-    #     """Logged-in user sees correct album count."""
-    #     self.client.force_login(self.user_1)
-    #     response = self.client.get(reverse('library'))
-    #     html = BeautifulSoup(response.content, 'html.parser')
-    #     albums = html.find_all('li', 'album')
-    #     self.assertEqual(1, len(albums))
+    def test_logged_in_user_library_view_shows_correct_album_count(self):
+        """Logged-in user sees correct album count."""
+        self.client.force_login(self.user_1)
+        response = self.client.get(reverse('library'))
+        html = BeautifulSoup(response.content, 'html.parser')
+        albums = html.find_all('li', 'album')
+        self.assertEqual(1, len(albums))
 
-    # def test_logged_in_user_library_view_shows_correct_photo_count(self):
-    #     """Logged-in user sees correct photo count."""
-    #     self.client.force_login(self.user_1)
-    #     response = self.client.get(reverse('library'))
-    #     html = BeautifulSoup(response.content, 'html.parser')
-    #     photos = html.find_all('li', 'photo')
-    #     self.assertEqual(10, len(photos))
+    def test_logged_in_user_library_view_shows_correct_photo_count(self):
+        """Logged-in user sees correct photo count."""
+        self.client.force_login(self.user_1)
+        response = self.client.get(reverse('library'))
+        html = BeautifulSoup(response.content, 'html.parser')
+        photos = html.find_all('li', 'photo')
+        self.assertEqual(10, len(photos))
 
     def test_logged_in_user_library_view_album_cover_image(self):
         """."""
