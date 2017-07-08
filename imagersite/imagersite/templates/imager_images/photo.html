@@ -1,0 +1,12 @@
+{% extends 'imagersite/base.html' %}
+{% load thumbnail %}
+{% block content %}
+<p>{{ photo.title }}</p>
+    {% if photo.published %}
+        {% thumbnail photo.photo "500x500" crop="center" as im %}
+            <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+        {% endthumbnail %}
+    {% else %}
+        <p>Photo doesn't exist.</p>
+    {% endif %}
+{% endblock %} 

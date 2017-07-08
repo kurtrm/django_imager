@@ -1,0 +1,17 @@
+{% extends 'imagersite/base.html' %}
+
+{% block content %}
+{{ user.username }}
+<p class="username">{{ user.username }}</p>
+<p>Images</p>
+<ul>
+    <li>Public: {{ photos_pub }} image{{ photos_pub|pluralize }}</li>
+    <li>Private: {{ photos_priv }} image{{ photos_priv|length|pluralize }}</li>
+</ul>
+<p>Albums</p>
+<ul>
+    <li>Public: {{ albums_pub }} album{{ albums_pub|pluralize }}</li>
+    <li>Private: {{ albums_priv }} album{{ albums_priv|pluralize }}</li>
+</ul>
+<a href="/images/library">Visit your library</a>
+{% endblock %} 

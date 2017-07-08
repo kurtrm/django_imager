@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.utils.encoding import python_2_unicode_compatible
 
 
+@python_2_unicode_compatible
 class Photo(models.Model):
     """Create a photo model."""
 
@@ -31,11 +32,12 @@ class Photo(models.Model):
         null=True
     )
 
-    def __repr__(self):
+    def __str__(self):
         """Represent."""
-        return "<Photo: {}>".format(self.title)
+        return "{}".format(self.title)
 
 
+@python_2_unicode_compatible
 class Album(models.Model):
     """Create an album model."""
 
@@ -65,8 +67,9 @@ class Album(models.Model):
     cover = models.ForeignKey(
         Photo,
         null=True,
+        blank=True,
         related_name='+')
 
-    def __repr__(self):
+    def __str__(self):
         """Represent."""
-        return "<Album: {}>".format(self.title)
+        return "{}".format(self.title)

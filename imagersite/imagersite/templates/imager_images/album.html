@@ -1,0 +1,23 @@
+{% extends 'imagersite/base.html' %}
+{% load thumbnail %}
+{% block content %}
+{% if whole_album %}
+    <p class="album-title">{{ whole_album.title }}</p>
+    <ul>
+        {% if album %}
+            {% for photo in album %}
+                {% if photo.published != 'PV' %}
+                <li>{{ photo.title }}</li>
+                {% thumbnail photo.photo "200x200" crop="center" as im %}
+                    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                {% endthumbnail %}
+                {% endif %}
+            {% endfor %}
+    </ul>
+        {% else %}
+            <p>No images in this album.</p>
+        {% endif %}
+{% else %}
+    <p>No album here.</p>
+{% endif %}
+{% endblock %} 

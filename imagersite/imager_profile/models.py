@@ -29,6 +29,11 @@ class ImagerProfile(models.Model):
     active = ProfileManager()
 
     @property
+    def username(self):
+        """."""
+        return self.user.username
+
+    @property
     def is_active(self):
         """."""
         return self.user.is_active

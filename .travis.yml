@@ -7,8 +7,8 @@ install:
   - pip install --upgrade pip
   - pip install -r requirements.pip
   - pip install coveralls
+  - pip install python-coveralls
 # command to run tests
-
 env:
   - SECRET_KEY='cakecake' DATABASE_NAME='test_database' DATABASE_USER='postgres' DATABASE_HOST="127.0.0.1" DATABASE_PASSWORD=''
 
@@ -20,7 +20,6 @@ before_script:
 
 script: 
   - python imagersite/manage.py migrate
-  - coverage run --source='imager_profile' imagersite/manage.py test imager_profile
-  - coverage run --source='imagersite' imagersite/manage.py test imagersite
+  - coverage run imagersite/manage.py test imagersite
 after_success:
   - coveralls

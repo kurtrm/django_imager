@@ -5,8 +5,49 @@ from django.contrib.auth.models import User
 from django.core import mail
 from bs4 import BeautifulSoup
 from imagersite.views import home_view
+from imager_images.models import Photo
+from django.core.files.uploadedfile import SimpleUploadedFile
+import faker
+import datetime
 import factory
+import os
 
+HERE = os.path.dirname(__file__)
+
+fake = faker.Faker()
+
+
+class UserFactory(factory.django.DjangoModelFactory):
+    """Factory for creating users."""
+
+    class Meta:
+        """."""
+
+        model = User
+    username = factory.Sequence(lambda n: 'user{}'.format(n))
+    email = factory.Sequence(lambda n: 'user{}@example.com'.format(n))
+
+
+class PhotoFactory(factory.django.DjangoModelFactory):
+    """Factory for creating photos."""
+
+    class Meta:
+        """."""
+
+        model = Photo
+
+    title = factory.Sequence(
+        lambda n: 'Photo{}'.format(n)
+    )
+    description = fake.text(254)
+    date_modified = datetime.datetime.now()
+    photo = SimpleUploadedFile(
+        name='example.jpg',
+        content=open(os.path.join(
+            HERE,
+            'static/assets',
+            'camera.png'), 'rb').read(),
+        content_type='image/jpeg')
 
 class Registration(TestCase):
     """Tests for registration process."""
@@ -89,8 +130,26 @@ class LoginLogout(TestCase):
 
     def setUp(self):
         """Create a client instance."""
+        user = User(
+            username='mcgee',
+            email='mcgee@mcgee.com'
+        )
+        user.save()
+        self.user = user
+
         self.client = Client()
         self.req_factory = RequestFactory()
+        photos_1 = PhotoFactory.build()
+        photos_1.user = self.user
+        photos_1.title = 'Private Image'
+        photos_1.save()
+        photos_2 = PhotoFactory.build()
+        photos_2.user = self.user
+        photos_2.title = 'Public Image'
+        photos_2.published = 'PB'
+        photos_2.save()
+        self.photos_1 = photos_1
+        self.photos_2 = photos_2
 
     def test_home_view_returns_status_code_200(self):
         """Test home view has status 200."""
@@ -146,4 +205,4 @@ class LoginLogout(TestCase):
         test_user.set_password('helloiammorgan')
         test_user.save()
         response = self.client.post(reverse('login'), {'username': 'morgan', 'password': 'helloiammorgan'}, follow=True)
-        self.assertTrue(response.request['PATH_INFO'] == '/')
+        self.assertTrue(response.request['PATH_INFO'] == '/profile/')
