@@ -17,7 +17,7 @@
         <li class="album">{{ album.title }}</li>
         {% if album.cover.photo.url %}
             {% thumbnail album.cover.photo "100x100" crop="center" as im %}
-                <img src="{{ im.url }}" />
+                <img alt="album cover" src="{{ im.url }}" />
             {% endthumbnail %}
         {% else %}
             {% thumbnail "assets/camera.png" "100x100" crop="center" as im %}
