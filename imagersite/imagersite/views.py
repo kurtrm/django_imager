@@ -1,19 +1,19 @@
 """Project-level views."""
 from django.shortcuts import render
+from django.views.generic.base import TemplateView
 from imager_images.models import Photo
 
 
-def home_view(request):
+class HomeView(TemplateView):
     """View for the home page."""
-    photos = Photo.objects.all()
-    images = [photos[i].photo.url for i, _ in enumerate(photos)]
+    template_name = 'imagersite/home.html'
 
-    return render(
-        request,
-        'imagersite/home.html',
-        context={'content': 'cake',
-                 'image': images}
-    )
+    def get_context_data(self, **kwargs):
+        photos = Photo.objects.all()
+        context = super().get_context_data(**kwargs)
+        context['image'] = [photos[i].photo.url for i in range(len(photos))]
+
+        return context
 
 
 def account_view(request):

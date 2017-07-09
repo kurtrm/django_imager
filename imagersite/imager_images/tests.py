@@ -2,17 +2,18 @@
 
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, Client, RequestFactory
 from imager_images.models import Photo, Album
 from bs4 import BeautifulSoup
 from imager_images.views import (
-    library,
-    photos_view,
-    single_photo_view,
-    single_album_view,
-    albums_view)
+    LibraryView,
+    AlbumDetailView,
+    AlbumListView,
+    PhotoDetailView,
+    PhotoListView
+)
 import faker
 import datetime
 import factory
@@ -42,7 +43,7 @@ class PhotoFactory(factory.django.DjangoModelFactory):
         content=open(os.path.join(
             HERE,
             'static',
-            'jerry-kiesewetter-192478.jpg'), 'rb').read(),
+            'New-smaller-Coca-Cola-can-001.jpg'), 'rb').read(),
         content_type='image/jpeg')
 
 
@@ -122,7 +123,7 @@ class PhotoTestModels(TestCase):
         self.assertEqual(self.photo1.published, 'SH')
 
 
-class PhotoView(TestCase):
+class TestPhotoView(TestCase):
     """Test photo views."""
 
     def setUp(self):
@@ -187,7 +188,7 @@ class PhotoView(TestCase):
 
     def test_image_count_correct(self):
         """Test img element count is equal to public images."""
-        response = self.client.get(reverse('photos'))
+        response = self.client.get(reverse_lazy('photos'))
         html = BeautifulSoup(response.content, 'html.parser')
         photos = html.find_all('img')
         self.assertEqual(len(photos), Photo.objects.filter(published='PB').count())
@@ -247,7 +248,7 @@ class AlbumsTestModels(TestCase):
         self.assertEqual(album.published, 'SH')
 
 
-class LibraryView(TestCase):
+class TestLibraryView(TestCase):
     """Test library view."""
 
     def setUp(self):
@@ -312,19 +313,19 @@ class LibraryView(TestCase):
 
     def test_logged_out_user_redirects(self):
         """Logged out user redirects to login."""
-        response = self.client.get(reverse('library'))
+        response = self.client.get(reverse_lazy('library'))
         self.assertRedirects(response, '/accounts/login/?next=/images/library/')
 
     def test_logged_in_user_gets_200_status(self):
         """Logged in user gets 200 status on library get."""
         self.client.force_login(self.user_1)
-        response = self.client.get(reverse('library'))
+        response = self.client.get(reverse_lazy('library'))
         self.assertTrue(response.status_code == 200)
 
     def test_logged_in_user_library_view_shows_correct_album_count(self):
         """Logged-in user sees correct album count."""
         self.client.force_login(self.user_1)
-        response = self.client.get(reverse('library'))
+        response = self.client.get(reverse_lazy('library'))
         html = BeautifulSoup(response.content, 'html.parser')
         albums = html.find_all('li', 'album')
         self.assertEqual(1, len(albums))
@@ -332,7 +333,7 @@ class LibraryView(TestCase):
     def test_logged_in_user_library_view_shows_correct_photo_count(self):
         """Logged-in user sees correct photo count."""
         self.client.force_login(self.user_1)
-        response = self.client.get(reverse('library'))
+        response = self.client.get(reverse_lazy('library'))
         html = BeautifulSoup(response.content, 'html.parser')
         photos = html.find_all('li', 'photo')
         self.assertEqual(10, len(photos))
@@ -340,7 +341,7 @@ class LibraryView(TestCase):
     def test_logged_in_user_library_view_album_cover_image(self):
         """."""
         self.client.force_login(self.user_1)
-        response = self.client.get(reverse('library'))
+        response = self.client.get(reverse_lazy('library'))
         html = BeautifulSoup(response.content, 'html.parser')
         album_cover = html.find('li', 'album').next_sibling.next_sibling
         tags = album_cover.attrs
@@ -349,14 +350,14 @@ class LibraryView(TestCase):
     def test_logged_in_user_library_view_album_cover_default(self):
         """."""
         self.client.force_login(self.user_3)
-        response = self.client.get(reverse('library'))
+        response = self.client.get(reverse_lazy('library'))
         html = BeautifulSoup(response.content, 'html5lib')
         album_cover = html.find('li', 'album').next_sibling.next_sibling
         tags = album_cover.attrs
         self.assertTrue(tags['alt'] == 'default cover image: camera')
 
 
-class AlbumView(TestCase):
+class TestAlbumView(TestCase):
     """Test album views."""
 
     def setUp(self):
@@ -421,21 +422,21 @@ class AlbumView(TestCase):
 
     def test_albums_logged_in_logged_out_users_see_same_content(self):
         """View is the same regardless of auth."""
-        logged_out_response = self.client.get(reverse('albums'))
+        logged_out_response = self.client.get(reverse_lazy('albums'))
         self.client.force_login(self.user_1)
-        logged_in_response = self.client.get(reverse('albums'))
+        logged_in_response = self.client.get(reverse_lazy('albums'))
         self.assertEqual(logged_out_response.content, logged_in_response.content)
 
     def test_public_album_count(self):
         """Display albums match published album count."""
-        response = self.client.get(reverse('albums'))
+        response = self.client.get(reverse_lazy('albums'))
         html = BeautifulSoup(response.content, 'html5lib')
         albums = html.find_all('li', 'album')
         self.assertEqual(len(albums), Album.objects.filter(published='PB').count())
 
     def test_album_displays_correct_number_images(self):
         """Album view displays all published photos belonging to album."""
-        response = self.client.get(reverse('single_album', kwargs={'album_id': self.albums[0].id}))
+        response = self.client.get(reverse_lazy('single_album', kwargs={'pk': self.albums[0].id}))
         html = BeautifulSoup(response.content, 'html5lib')
         photos = html.find_all('img')
         album_title = html.find('p', 'album-title').text
@@ -444,7 +445,7 @@ class AlbumView(TestCase):
 
     def test_album_logged_in_logged_out_users_see_same_content(self):
         """."""
-        logged_out_response = self.client.get(reverse('single_album', kwargs={'album_id': self.albums[0].id}))
+        logged_out_response = self.client.get(reverse_lazy('single_album', kwargs={'pk': self.albums[0].id}))
         self.client.force_login(self.user_1)
-        logged_in_response = self.client.get(reverse('single_album', kwargs={'album_id': self.albums[0].id}))
+        logged_in_response = self.client.get(reverse_lazy('single_album', kwargs={'pk': self.albums[0].id}))
         self.assertEqual(logged_out_response.content, logged_in_response.content)

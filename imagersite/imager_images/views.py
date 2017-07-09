@@ -1,20 +1,22 @@
 """."""
-from .models import Photo, Album
+from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
-from django.views.generic.base import TemplateView
+from .models import Photo, Album
 
 
 class LibraryView(TemplateView):
     """List view for both albums and phots."""
-    
+
     template_name = 'imager_images/library.html'
 
     def get_context_data(self, **kwargs):
+        # import pdb; pdb.set_trace()
         context = super().get_context_data(**kwargs)
-        context['photos'] = Photo.objects.all()
-        context['albums'] = Album.objects.all()
-        return {'photos': context['photos'], 'albums': context['albums']}
+        username = context['view'].request.user
+        context['photos'] = Photo.objects.filter(user=username)
+        context['albums'] = Album.objects.filter(user=username)
+        return context
 
 
 class PhotoListView(ListView):
@@ -26,7 +28,8 @@ class PhotoListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        return {'photos': context['photo_list']}
+        context['photo_list'] = context['photo_list'].filter(published='PB')
+        return context
 
 
 class PhotoDetailView(DetailView):
@@ -38,7 +41,7 @@ class PhotoDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        return {'photo': context['photo']}
+        return context
 
 
 class AlbumListView(ListView):
@@ -50,7 +53,8 @@ class AlbumListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        return {'albums': context['album_list'].filter(published='PB')}
+        context['album_list'] = context['album_list'].filter(published='PB')
+        return context
 
 
 class AlbumDetailView(DetailView):
@@ -62,5 +66,5 @@ class AlbumDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        album_photos = context['album'].photos.filter(published='PB')
-        return {'album': context['album'], 'album_photos': album_photos}
+        context['album_photos'] = context['album'].photos.filter(published='PB')
+        return context
