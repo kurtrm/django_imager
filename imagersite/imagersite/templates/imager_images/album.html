@@ -1,11 +1,11 @@
 {% extends 'imagersite/base.html' %}
 {% load thumbnail %}
 {% block content %}
-{% if whole_album %}
-    <p class="album-title">{{ whole_album.title }}</p>
+{% if album %}
+    <p class="album-title">{{ album.title }}</p>
     <ul>
-        {% if album %}
-            {% for photo in album %}
+        {% if album_photos %}
+            {% for photo in album_photos %}
                 {% if photo.published != 'PV' %}
                 <li>{{ photo.title }}</li>
                 {% thumbnail photo.photo "200x200" crop="center" as im %}
