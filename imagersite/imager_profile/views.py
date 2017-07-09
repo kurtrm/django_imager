@@ -13,7 +13,7 @@ class ProfileView(TemplateView):
     template_name = 'imager_profile/profile.html'
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super(ProfileView, self).get_context_data(**kwargs)
         context['photos_priv'] = (Photo.objects
                                   .filter(published='PV')
                                   .count())
@@ -36,7 +36,7 @@ class PublicProfileView(TemplateView):
 
     def get_context_data(self, **kwargs):
         # import pdb; pdb.set_trace()
-        context = super().get_context_data(**kwargs)
+        context = super(PublicProfileView, self).get_context_data(**kwargs)
         request_user = User.objects.filter(username=self.kwargs['request_username'])
         imager_profile = ImagerProfile.objects.filter(user=request_user)
         context['photos_pub'] = (Photo.objects

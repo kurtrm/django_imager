@@ -10,7 +10,7 @@ class HomeView(TemplateView):
 
     def get_context_data(self, **kwargs):
         photos = Photo.objects.all()
-        context = super().get_context_data(**kwargs)
+        context = super(HomeView, self).get_context_data(**kwargs)
         context['image'] = [photos[i].photo.url for i in range(len(photos))]
 
         return context

@@ -449,3 +449,11 @@ class TestAlbumView(TestCase):
         self.client.force_login(self.user_1)
         logged_in_response = self.client.get(reverse_lazy('single_album', kwargs={'pk': self.albums[0].id}))
         self.assertEqual(logged_out_response.content, logged_in_response.content)
+
+
+class TestAddPhotos(TestCase):
+    """Tests for verifying users can add photos."""
+
+
+class TestAddAlbums(TestCase):
+    """Tests for verifying users can add albums."""

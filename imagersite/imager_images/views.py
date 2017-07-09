@@ -12,7 +12,7 @@ class LibraryView(TemplateView):
 
     def get_context_data(self, **kwargs):
         # import pdb; pdb.set_trace()
-        context = super().get_context_data(**kwargs)
+        context = super(LibraryView, self).get_context_data(**kwargs)
         username = context['view'].request.user
         context['photos'] = Photo.objects.filter(user=username)
         context['albums'] = Album.objects.filter(user=username)
@@ -27,7 +27,7 @@ class PhotoListView(ListView):
     model = Photo
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super(PhotoListView, self).get_context_data(**kwargs)
         context['photo_list'] = context['photo_list'].filter(published='PB')
         return context
 
@@ -40,7 +40,7 @@ class PhotoDetailView(DetailView):
     model = Photo
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super(PhotoDetailView, self).get_context_data(**kwargs)
         return context
 
 
@@ -52,7 +52,7 @@ class AlbumListView(ListView):
     model = Album
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super(AlbumListView, self).get_context_data(**kwargs)
         context['album_list'] = context['album_list'].filter(published='PB')
         return context
 
@@ -65,6 +65,6 @@ class AlbumDetailView(DetailView):
     model = Album
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super(AlbumDetailView, self).get_context_data(**kwargs)
         context['album_photos'] = context['album'].photos.filter(published='PB')
         return context
