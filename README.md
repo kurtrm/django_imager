@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/kurtrm/django_imager.svg?branch=front-end-2)](https://travis-ci.org/kurtrm/django_imager)
-[![Coverage Status](https://coveralls.io/repos/github/kurtrm/django_imager/badge.svg?branch=front-end-2)](https://coveralls.io/github/kurtrm/django_imager?branch=front-end-2)
+[![Build Status](https://travis-ci.org/kurtrm/django_imager.svg?branch=front-end-3)](https://travis-ci.org/kurtrm/django_imager)
+[![Coverage Status](https://coveralls.io/repos/github/kurtrm/django_imager/badge.svg?branch=front-end-3)](https://coveralls.io/github/kurtrm/django_imager?branch=front-end-3)
 
 ## Django Imager
 
