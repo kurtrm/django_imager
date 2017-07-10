@@ -80,7 +80,30 @@ class PhotoCreate(CreateView):
     success_url = reverse_lazy('library')
 
     def form_valid(self, form):
-        """Identify form data with user."""
+        """Identify form data with user and save in db."""
+        self.object = form.save(commit=False)
+        self.object.user = self.request.user
+        self.object.save()
+        return super(CreateView, self).form_valid(form)
+
+
+class AlbumCreate(CreateView):
+    """Class-based view to create new albums."""
+
+    model = Album
+    fields = ['title', 'description', 'photos', 'cover', 'published']
+    success_url = reverse_lazy('library')
+
+    def get_form(self):
+        """Update form fields with photos belonging to user."""
+        form = super(AlbumCreate, self).get_form()
+        user_photos = Photo.objects.filter(user=self.request.user)
+        form.fields['photos'].queryset = user_photos
+        form.fields['cover'].queryset = user_photos
+        return form
+
+    def form_valid(self, form):
+        """Identify form data with user and save in db."""
         self.object = form.save(commit=False)
         self.object.user = self.request.user
         self.object.save()

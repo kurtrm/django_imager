@@ -1,6 +1,4 @@
 """."""
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
 from imager_images.models import Photo, Album
 from django.contrib.auth.models import User
 from imager_profile.models import ImagerProfile
@@ -13,29 +11,35 @@ class ProfileView(TemplateView):
     template_name = 'imager_profile/profile.html'
 
     def get_context_data(self, **kwargs):
+        """Build context for view."""
         context = super(ProfileView, self).get_context_data(**kwargs)
         context['photos_priv'] = (Photo.objects
                                   .filter(published='PV')
+                                  .filter(user=self.request.user)
                                   .count())
         context['photos_pub'] = (Photo.objects
                                  .filter(published='PB')
+                                 .filter(user=self.request.user)
                                  .count())
         context['albums_priv'] = (Album.objects
                                   .filter(published='PV')
+                                  .filter(user=self.request.user)
                                   .count())
         context['albums_pub'] = (Album.objects
                                  .filter(published='PB')
+                                 .filter(user=self.request.user)
                                  .count())
 
         return context
 
 
 class PublicProfileView(TemplateView):
-    """Classed based public profile view."""
+    """Class based public profile view."""
+
     template_name = 'imager_profile/public_profile.html'
 
     def get_context_data(self, **kwargs):
-        # import pdb; pdb.set_trace()
+        """Build context for view."""
         context = super(PublicProfileView, self).get_context_data(**kwargs)
         request_user = User.objects.filter(username=self.kwargs['request_username'])
         imager_profile = ImagerProfile.objects.filter(user=request_user)
