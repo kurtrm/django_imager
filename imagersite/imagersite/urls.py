@@ -26,7 +26,8 @@ from imager_images.views import (
     AlbumDetailView,
     AlbumListView,
     PhotoDetailView,
-    PhotoListView
+    PhotoListView,
+    PhotoCreate
 )
 
 urlpatterns = [
@@ -43,6 +44,7 @@ urlpatterns = [
     url(r'^images/library/$', login_required(LibraryView.as_view()), name='library'),
     url(r'^images/photos/(?P<pk>\d+)/$', PhotoDetailView.as_view(),
         name='single_photo'),
+    url(r'^images/photos/add/$', PhotoCreate.as_view(), name='photo_add'),
     url(r'^images/photos/$', PhotoListView.as_view(), name='photos'),
     url(r'^images/albums/(?P<pk>\d+)/$', AlbumDetailView.as_view(),
         name='single_album'),
