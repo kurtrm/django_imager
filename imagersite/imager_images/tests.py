@@ -451,9 +451,89 @@ class TestAlbumView(TestCase):
         self.assertEqual(logged_out_response.content, logged_in_response.content)
 
 
-class TestAddPhotos(TestCase):
-    """Tests for verifying users can add photos."""
+# class TestAddPhotos(TestCase):
+#     """Tests for verifying users can add photos."""
+#     def setUp(self):
+#         """."""
+#         user = User(
+#             username='morgan',
+#             email='morgan@morgan.com'
+#         )
+#         user.save()
+#         self.user = user
+#         self.client = Client()
+#         self.photo = SimpleUploadedFile(
+#             name='example.jpg',
+#             content=open(os.path.join(
+#                 HERE,
+#                 'static',
+#                 'New-smaller-Coca-Cola-can-001.jpg'), 'rb').read(),
+#             content_type='image/jpeg')
 
+#     def test_user_must_be_logged_in_to_add_photos(self):
+#         """User must be logged in to add photos."""
+#         response = self.client.get(reverse_lazy('add_photos'))
+#         self.assertRedirects(response, '/accounts/login/?next=/images/library/')
+
+#     def test_get_on_add_photo_page(self):
+#         """Test that we get 200 response code for adding photos."""
+#         self.client.force_login(self.user)
+#         response = self.client.get(reverse_lazy('add_photos'))
+#         self.assertEqual(response.status_code, 200)
+
+#     def test_user_redirects_after_successful_post(self):
+#         """."""
+#         # from django.views.generic.edit import CreateView
+#         # import pdb; pdb.set_trace()
+#         self.client.force_login(self.user)
+#         response = self.client.post(reverse_lazy('add_photos'),
+#                                     {'title': 'New Test Photo',
+#                                      'description': 'Short description goes here.',
+#                                      'published': 'PV',
+#                                      'photo': self.photo})
+#         self.assertRedirects(response, '/images/library/')
+
+#     def test_user_cant_submit_without_photo(self):
+#         """."""
+#         # from django.views.generic.edit import CreateView
+#         # import pdb; pdb.set_trace()
+#         self.client.force_login(self.user)
+#         response = self.client.post(reverse_lazy('add_photos'),
+#                                     {'title': 'New Test Photo',
+#                                      'description': 'Short description goes here.',
+#                                      'published': 'PV',
+#                                      'photo': ''})
+#         self.assertFormError(response, form, 'photo', 'You must upload a photo.')
+
+#     def test_photo_in_database(self):
+#         """."""
+#         self.assertEqual(Photos.objects.all(), 0)
+#         self.client.force_login(self.user)
+#         response = self.client.post(reverse_lazy('add_photos'),
+#                                     {'title': 'New Test Photo',
+#                                      'description': 'Short description goes here.',
+#                                      'published': 'PV',
+#                                      'photo': self.photo})
+#         self.assertRedirects(response, '/images/library/')
+#         self.assertEqual(Photos.objects.all(), 1)
+
+#     def test_logged_in_user_library_view_shows_correct_photo_count(self):
+#         """Logged-in user sees correct photo count."""
+#         self.assertEqual(0, len(photos))
+#         self.client.force_login(self.user)
+#         response = self.client.post(reverse_lazy('add_photos'),
+#                                     {'title': 'New Test Photo',
+#                                      'description': 'Short description goes here.',
+#                                      'published': 'PV',
+#                                      'photo': self.photo})
+#         html = BeautifulSoup(response.content, 'html.parser')
+#         photos = html.find_all('li', 'photo')
+#         self.assertEqual(1, len(photos))
 
 class TestAddAlbums(TestCase):
     """Tests for verifying users can add albums."""
+    #  Must be logged in to add albums
+    #  Response 200 on GET request
+    #  Response 302 on successful POST request
+    #  Test album in database
+    #  Test album appears on library page
