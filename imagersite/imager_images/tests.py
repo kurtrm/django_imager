@@ -485,7 +485,7 @@ class TestAddPhotos(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_user_redirects_after_successful_post(self):
-        """."""
+        """Test that a successful post redirects to the library."""
         # from django.views.generic.edit import CreateView
         self.client.force_login(self.user)
         response = self.client.post(reverse_lazy('photo_add'),
@@ -532,6 +532,103 @@ class TestAddPhotos(TestCase):
         self.assertEqual(1, len(photos))
 
 
+class TestPhotoEdit(TestCase):
+    """Tests to verify a user can update an existing album."""
+
+    def setUp(self):
+        """."""
+        user = User(
+            username='morgan',
+            email='morgan@morgan.com'
+        )
+        user.save()
+        self.user = user
+
+        photos = [PhotoFactory.build() for i in range(10)]
+        for photo in photos:
+            photo.user = user
+            photo.published = 'PB'
+            photo.save()
+        photos[0].published = 'PV'
+        photos[0].save()
+
+        self.photos = photos
+        self.client = Client()
+
+    def test_user_must_be_logged_in_to_edit_album(self):
+        """User must be logged in to add photo."""
+        photos = Photo.objects.all()
+        photo_id = photos[2].id
+        response = self.client.get(reverse_lazy('photo_edit', kwargs={'pk': str(photo_id)}))
+        self.assertRedirects(response,
+                             '/accounts/login/?next=/images/photos/{}/edit/'.format(photo_id))
+
+    def test_logged_in_user_gets_200(self):
+        """Logged in user gets 200 status on photo edit page."""
+        photos = Photo.objects.all()
+        photo_id = photos[2].id
+        self.client.force_login(self.user)
+        response = self.client.get(reverse_lazy('photo_edit', kwargs={'pk': str(photo_id)}))
+        self.assertEqual(response.status_code, 200)
+
+    def test_default_form_values_match_database(self):
+        """Form populates with correct default values for album."""
+        photos = Photo.objects.all()
+        photo = photos[2]
+        photo_id = photo.id
+        self.client.force_login(self.user)
+        response = self.client.get(reverse_lazy('photo_edit', kwargs={'pk': str(photo_id)}))
+        html = BeautifulSoup(response.content, 'html5lib')
+        description = html.find(id='id_description')
+        title = html.find(id='id_title')
+        published = html.find(id='id_published').next_element.next_element
+        self.assertEqual(description.attrs['value'], photo.description)
+        self.assertEqual(title.attrs['value'], photo.title)
+        self.assertEqual(published.attrs['value'], photo.published)
+
+    def test_successful_edit_redirects(self):
+        """Successful edit redirects to library."""
+        self.client.force_login(self.user)
+        photos = Photo.objects.all()
+        photo = photos[1]
+        photo_id = photo.id
+        response = self.client.post(reverse_lazy('photo_edit', kwargs={'pk': str(photo_id)}),
+                                    {'title': 'New Test Photo',
+                                     'description': 'Short description goes here.',
+                                     'published': 'PV',
+                                     'photo': self.photos[3]})
+        self.assertRedirects(response, '/images/library/')
+
+    def test_successful_edit_doesnt_add_new_photo(self):
+        """Successful edit redirects to library."""
+        self.client.force_login(self.user)
+        photo_count = Photo.objects.count()
+        photos = Photo.objects.all()
+        photo_id = photos[0].id
+        self.client.post(reverse_lazy('photo_edit', kwargs={'pk': str(photo_id)}),
+                         {'title': 'New Test Photo',
+                          'description': 'Short description goes here.',
+                          'published': 'PV',
+                          'photo': self.photos[3]})
+        photo_count_after = Photo.objects.count()
+        self.assertEqual(photo_count, photo_count_after)
+
+    def test_successful_edit_updates_db(self):
+        """Successful edit updates object in database."""
+        self.client.force_login(self.user)
+        photos = Photo.objects.all()
+        photo_id = photos[0].id
+        self.client.post(reverse_lazy('photo_edit', kwargs={'pk': str(photo_id)}),
+                         {'title': 'Updated title',
+                          'description': 'New photo description',
+                          'published': 'PB',
+                          'photo': self.photos[3]})
+        updated_photo = Photo.objects.get(id=photo_id)
+        self.assertEqual(updated_photo.title, 'Updated title')
+        self.assertEqual(updated_photo.description, 'New photo description')
+        self.assertEqual(updated_photo.published, 'PB')
+
+
 class TestAddAlbums(TestCase):
     """Tests for verifying users can add albums."""
 
@@ -559,7 +656,7 @@ class TestAddAlbums(TestCase):
         response = self.client.get(reverse_lazy('album_add'))
         self.assertEqual(response.status_code, 200)
 
-    def test_form_is_valid_create_album(self):
+    def test_form_post_redirects(self):
         """Test user is redirected after successful post."""
         self.client.force_login(self.user)
         photo = Photo.objects.all()
@@ -573,7 +670,7 @@ class TestAddAlbums(TestCase):
         self.assertRedirects(response, '/images/library/')
 
     def test_user_cant_submit_album_without_photo(self):
-        """."""
+        """Test adding album requires photos."""
         self.client.force_login(self.user)
         response = self.client.post(reverse_lazy('album_add'),
                                     {'title': 'Test Album',
@@ -612,3 +709,120 @@ class TestAddAlbums(TestCase):
         html = BeautifulSoup(response.content, 'html.parser')
         albums = html.find_all('li', 'album')
         self.assertEqual(1, len(albums))
+
+
+class TestAlbumEdit(TestCase):
+    """Tests to verify a user can update an existing album."""
+
+    def setUp(self):
+        """."""
+        user = User(
+            username='morgan',
+            email='morgan@morgan.com'
+        )
+        user.save()
+        self.user = user
+
+        photos = [PhotoFactory.build() for i in range(10)]
+        for photo in photos:
+            photo.user = user
+            photo.published = 'PB'
+            photo.save()
+        photos[0].published = 'PV'
+        photos[0].save()
+
+        album = AlbumFactory.build()
+        album.user = user
+        album.published = 'PB'
+        album.cover = photos[1]
+        album.save()
+
+        for photo in photos:
+            album.photos.add(photo)
+            album.save()
+
+        self.photos = photos
+        self.albums = album
+        self.client = Client()
+
+    def test_user_must_be_logged_in_to_edit_album(self):
+        """User must be logged in to add album."""
+        albums = Album.objects.all()
+        album_id = albums[0].id
+        response = self.client.get(reverse_lazy('album_edit', kwargs={'pk': str(album_id)}))
+        self.assertRedirects(response,
+                             '/accounts/login/?next=/images/albums/{}/edit/'.format(album_id))
+
+    def test_logged_in_user_gets_200(self):
+        """Logged in user gets 200 status on album edit page."""
+        albums = Album.objects.all()
+        album_id = albums[0].id
+        self.client.force_login(self.user)
+        response = self.client.get(reverse_lazy('album_edit', kwargs={'pk': str(album_id)}))
+        self.assertEqual(response.status_code, 200)
+
+    def test_default_form_values_match_database(self):
+        """Form populates with correct default values for album."""
+        albums = Album.objects.all()
+        album_id = albums[0].id
+        self.client.force_login(self.user)
+        response = self.client.get(reverse_lazy('album_edit', kwargs={'pk': str(album_id)}))
+        html = BeautifulSoup(response.content, 'html5lib')
+        description = html.find(id='id_description')
+        title = html.find(id='id_title')
+        published = html.find(id='id_published').next_element.next_element
+        self.assertEqual(description.attrs['value'], albums[0].description)
+        self.assertEqual(title.attrs['value'], albums[0].title)
+        self.assertEqual(published.attrs['value'], albums[0].published)
+
+    def test_successful_edit_redirects(self):
+        """Successful edit redirects to library."""
+        self.client.force_login(self.user)
+        albums = Album.objects.all()
+        album_id = albums[0].id
+        photos = Photo.objects.all()
+        photo_id = photos[0].id
+        response = self.client.post(reverse_lazy('album_edit', kwargs={'pk': str(album_id)}),
+                                    {'title': 'Test Album',
+                                     'description': 'Short description goes here',
+                                     'photos': photo_id,
+                                     'cover': '',
+                                     'published': 'PB'})
+        self.assertRedirects(response, '/images/library/')
+
+    def test_successful_edit_doesnt_add_new_album(self):
+        """Successful edit redirects to library."""
+        self.client.force_login(self.user)
+        albums = Album.objects.all()
+        album_id = albums[0].id
+        album_count_before = Album.objects.count()
+        photos = Photo.objects.all()
+        photo_id = photos[0].id
+        self.client.post(reverse_lazy('album_edit', kwargs={'pk': str(album_id)}),
+                         {'title': 'Test Album',
+                          'description': 'Short description goes here',
+                          'photos': photo_id,
+                          'cover': '',
+                          'published': 'PB'})
+        album_count_after = Album.objects.count()
+        self.assertEqual(album_count_before, album_count_after)
+
+    def test_successful_edit_updates_db(self):
+        """Successful edit updates the db."""
+        self.client.force_login(self.user)
+        albums = Album.objects.all()
+        album_id = albums[0].id
+        photos = Photo.objects.all()
+        photo_id = photos[0].id
+        photo_cover = photos[1].id
+        self.client.post(reverse_lazy('album_edit', kwargs={'pk': str(album_id)}),
+                         {'title': 'Updated title',
+                          'description': 'Brand new description',
+                          'photos': photo_id,
+                          'cover': photo_cover,
+                          'published': 'PV'})
+        updated_album = Album.objects.get(id=album_id)
+        self.assertEqual(updated_album.title, 'Updated title')
+        self.assertEqual(updated_album.description, 'Brand new description')
+        self.assertEqual(updated_album.cover.id, photo_cover)
+        self.assertEqual(updated_album.published, 'PV')
