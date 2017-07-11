@@ -20,7 +20,7 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from imagersite.views import HomeView
-from imager_profile.views import ProfileView, PublicProfileView
+from imager_profile.views import ProfileView, PublicProfileView, ProfileEdit
 from imager_images.views import (
     LibraryView,
     AlbumDetailView,
@@ -42,6 +42,7 @@ urlpatterns = [
     url(r'^logout/$', auth_views.LogoutView.as_view(
         template_name='imagersite/home.html'), name='logout'),
     url(r'^profile/$', login_required(ProfileView.as_view()), name='profile'),
+    url(r'^profile/edit/$', login_required(ProfileEdit.as_view()), name='profile_edit'),
     url(r'^profile/(?P<request_username>\w+)/$', PublicProfileView.as_view(),
         name='public_profile'),
     url(r'^images/library/$', login_required(LibraryView.as_view()), name='library'),

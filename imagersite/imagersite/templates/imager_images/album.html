@@ -6,12 +6,10 @@
     <ul>
         {% if album_photos %}
             {% for photo in album_photos %}
-                {% if photo.published != 'PV' %}
                 <li>{{ photo.title }}</li>
                 {% thumbnail photo.photo "200x200" crop="center" as im %}
                     <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                 {% endthumbnail %}
-                {% endif %}
             {% endfor %}
     </ul>
         {% else %}

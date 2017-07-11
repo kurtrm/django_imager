@@ -3,10 +3,13 @@ from imager_images.models import Photo, Album
 from django.contrib.auth.models import User
 from imager_profile.models import ImagerProfile
 from django.views.generic.base import TemplateView
+from django.views.generic.edit import UpdateView
+from django.urls import reverse_lazy
+from .forms import UserForm
 
 
 class ProfileView(TemplateView):
-    """Classed based view for private profiles."""
+    """Class based view for private profiles."""
 
     template_name = 'imager_profile/profile.html'
 
@@ -30,6 +33,21 @@ class ProfileView(TemplateView):
                                  .filter(user=self.request.user)
                                  .count())
 
+        return context
+
+
+class ProfileEdit(TemplateView):
+    """Class based profile edit view."""
+
+    model = User
+    fields = ['username', 'password', 'email', 'first_name', 'last_name']
+    template_name = 'imager_profile/profile_form.html'
+    success_url = reverse_lazy('profile')
+
+    def get_context_data(self, **kwargs):
+        """."""
+        context = super(ProfileEdit, self).get_context_data(**kwargs)
+        context['form'] = UserForm()
         return context
 
 

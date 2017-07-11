@@ -40,11 +40,6 @@ class PhotoDetailView(DetailView):
     template_name = 'imager_images/photo.html'
     model = Photo
 
-    def get_context_data(self, **kwargs):
-        """Build context to create view."""
-        context = super(PhotoDetailView, self).get_context_data(**kwargs)
-        return context
-
 
 class AlbumListView(ListView):
     """Generic view for photo lists."""
@@ -145,4 +140,4 @@ class AlbumEdit(UpdateView):
         self.object = form.save(commit=False)
         self.object.user = self.request.user
         self.object.save()
-        return super(CreateView, self).form_valid(form)
+        return super(UpdateView, self).form_valid(form)
