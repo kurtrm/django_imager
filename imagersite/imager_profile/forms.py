@@ -11,4 +11,4 @@ class UserForm(forms.ModelForm):
         """Assign to User and select fields."""
 
         model = User
-        fields = ['username', 'password', 'email', 'first_name', 'last_name']
+        fields = ['username', 'email', 'first_name', 'last_name']
