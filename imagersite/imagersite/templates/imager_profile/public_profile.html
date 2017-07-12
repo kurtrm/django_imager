@@ -2,6 +2,7 @@
 {% load thumbnail %}
 
 {% block content %}
+<section class="profile">
     {% if imager_user %}
         <p>{{ username }}</p>
         <p>Photos</p>
@@ -31,4 +32,5 @@
     {% else %}
         <p>user doesn't exist</p>
     {% endif %}
+</section>
 {% endblock %} 

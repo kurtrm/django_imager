@@ -21,7 +21,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     """Factory for creating users."""
 
     class Meta:
-        """."""
+        """Associate with User."""
 
         model = User
     username = factory.Sequence(lambda n: 'user{}'.format(n))
@@ -32,7 +32,7 @@ class PhotoFactory(factory.django.DjangoModelFactory):
     """Factory for creating photos."""
 
     class Meta:
-        """."""
+        """Associate with Photo."""
 
         model = Photo
 
@@ -48,6 +48,7 @@ class PhotoFactory(factory.django.DjangoModelFactory):
             'static/assets',
             'camera.png'), 'rb').read(),
         content_type='image/jpeg')
+
 
 class Registration(TestCase):
     """Tests for registration process."""

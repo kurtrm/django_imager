@@ -36,16 +36,20 @@ class ProfileView(TemplateView):
         return context
 
 
-class ProfileEdit(TemplateView):
+class ProfileEdit(UpdateView):
     """Class based profile edit view."""
 
     model = User
-    fields = ['username', 'password', 'email', 'first_name', 'last_name']
+    fields = []
     template_name = 'imager_profile/profile_form.html'
     success_url = reverse_lazy('profile')
 
+    def get_object(self):
+        """Get user."""
+        return self.request.user
+
     def get_context_data(self, **kwargs):
-        """."""
+        """Assign form."""
         context = super(ProfileEdit, self).get_context_data(**kwargs)
         context['form'] = UserForm()
         return context

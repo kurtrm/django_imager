@@ -7,9 +7,11 @@
     {% for photo in photos %}
         <li class="photo">{{ photo.title }}</li>
         {% thumbnail photo.photo "100x100" crop="center" as im %}
-            <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+            <a href='{% url "single_photo" pk=photo.id %}'>
+                <img class="photo" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+            </a>
         {% endthumbnail %}
-        <a href="/images/photos/{{ photo.id }}/edit"><button>Update photo</button></a>
+        <a href='{% url "photo_edit" pk=photo.id %}'><button>Update photo</button></a>
     {% endfor %}
 </ul>
 <p>Albums</p>
@@ -18,14 +20,18 @@
         <li class="album">{{ album.title }}</li>
         {% if album.cover.photo.url %}
             {% thumbnail album.cover.photo "100x100" crop="center" as im %}
-                <img alt="album cover" src="{{ im.url }}" />
+                <a href='{% url "single_album" pk=album.id %}'>
+                    <img class="album" alt="album cover" src="{{ im.url }}" />
+                </a>
             {% endthumbnail %}
         {% else %}
             {% thumbnail "assets/camera.png" "100x100" crop="center" as im %}
-                <img alt="default cover image: camera" src="{{ im.url }}">
+                <a href='{% url "single_album" pk=album.id %}'>
+                    <img  class="album" alt="default cover image: camera" src="{{ im.url }}">
+                </a>
             {% endthumbnail %}
         {% endif %}
-        <a href="/images/albums/{{ album.id }}/edit"><button>Update album</button></a>
+        <a href='{% url "album_edit" pk=album.id %}'><button>Update album</button></a>
     {% endfor %}
 </ul>
 <a href="{% url 'photo_add' %}"><button>Add photo</button></a>
