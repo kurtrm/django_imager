@@ -12,13 +12,3 @@ class UserForm(forms.ModelForm):
 
         model = User
         fields = ['username', 'password', 'email', 'first_name', 'last_name']
-
-
-# class ImagerProfileForm(forms.ModelForm):
-#     """Build form for editing profile info."""
-
-#     class Meta:
-#         """Assign to ImagerProfile and select fields."""
-
-#         model = ImagerProfile
-#         exclude = ['user']
