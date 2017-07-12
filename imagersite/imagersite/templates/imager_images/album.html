@@ -1,21 +1,23 @@
 {% extends 'imagersite/base.html' %}
 {% load thumbnail %}
 {% block content %}
-{% if album %}
-    <p class="album-title">{{ album.title }}</p>
-    <ul>
-        {% if album_photos %}
-            {% for photo in album_photos %}
-                <li>{{ photo.title }}</li>
-                {% thumbnail photo.photo "200x200" crop="center" as im %}
-                    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
-                {% endthumbnail %}
-            {% endfor %}
-    </ul>
-        {% else %}
-            <p>No images in this album.</p>
-        {% endif %}
-{% else %}
-    <p>No album here.</p>
-{% endif %}
+<section class="album">
+    {% if album %}
+        <p class="album-title">{{ album.title }}</p>
+        <ul>
+            {% if album_photos %}
+                {% for photo in album_photos %}
+                    <li>{{ photo.title }}</li>
+                    {% thumbnail photo.photo "200x200" crop="center" as im %}
+                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                    {% endthumbnail %}
+                {% endfor %}
+        </ul>
+            {% else %}
+                <p>No images in this album.</p>
+            {% endif %}
+    {% else %}
+        <p>No album here.</p>
+    {% endif %}
+</section>
 {% endblock %} 

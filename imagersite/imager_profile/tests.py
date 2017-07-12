@@ -17,7 +17,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     """Factory for creating users."""
 
     class Meta:
-        """."""
+        """Associate with User."""
 
         model = User
     username = factory.Sequence(lambda n: 'user{}'.format(n))
@@ -28,7 +28,7 @@ class ImagerProfileTestCase(TestCase):
     """ImagerProfile tests."""
 
     def setUp(self):
-        """."""
+        """Make users."""
         users = [UserFactory.create() for i in range(20)]
 
         for user in users:
@@ -38,24 +38,24 @@ class ImagerProfileTestCase(TestCase):
         self.users = users
 
     def test_imager_profiles_have_user(self):
-        """."""
+        """Test imager profiles are associated with a user."""
         with self.assertRaises(Exception):
             imager_user = ImagerProfile()
             imager_user.save()
 
     def test_imager_profile_prints_username(self):
-        """."""
+        """Test imager profile prints correct username."""
         imager_profile = ImagerProfile.objects.first()
         self.assertTrue(str(imager_profile), imager_profile.user.username)
 
     def test_new_user_has_imager_profile(self):
-        """."""
+        """Test that a new user has an imager profile."""
         user = UserFactory.create()
         profile = ImagerProfile.objects.last()
         self.assertTrue(profile.user == user)
 
     def test_user_imager_profiles_count_matches(self):
-        """."""
+        """Test that the imager profile count and user count are the same."""
         self.assertEquals(len(User.objects.all()), len(ImagerProfile.objects.all()))
 
     def test_make_one_inactive_user(self):
@@ -66,14 +66,11 @@ class ImagerProfileTestCase(TestCase):
         self.assertEquals(User.objects.count(), ImagerProfile.active.count() + 1)
 
 
-#  profile related tests
-
-# private
 class PrivateProfileView(TestCase):
     """ImagerProfile tests."""
 
     def setUp(self):
-        """."""
+        """Make a user."""
         user = User(
             username='morgan',
             email='morgan@morgan.com'
@@ -119,7 +116,7 @@ class PhotoFactory(factory.django.DjangoModelFactory):
     """Factory for creating photos."""
 
     class Meta:
-        """."""
+        """Associate with Photo."""
 
         model = Photo
 
@@ -141,7 +138,7 @@ class AlbumFactory(factory.django.DjangoModelFactory):
     """Factory for creating albums."""
 
     class Meta:
-        """."""
+        """Associate with Album."""
 
         model = Album
 
@@ -156,7 +153,7 @@ class PublicProfileView(TestCase):
     """ImagerProfile tests."""
 
     def setUp(self):
-        """."""
+        """Make users, photos and albums."""
         user_1 = User(
             username='morgan',
             email='morgan@morgan.com'
@@ -207,16 +204,20 @@ class PublicProfileView(TestCase):
         self.album_2 = album_2
 
     def test_logged_logged_out_in_users_see_same_stuff(self):
-        """."""
+        """Test logged out and logged in users see the same public profile."""
         response_logged_out = self.client.get(reverse('public_profile',
                                               kwargs={'request_username': 'mcgeeman'}))
+        html_lo = BeautifulSoup(response_logged_out.content, 'html.parser')
+        response_lo_content = html_lo.find('section', 'profile')
         self.client.force_login(self.user_1)
         response_logged_in = self.client.get(reverse('public_profile',
                                              kwargs={'request_username': 'mcgeeman'}))
-        self.assertEqual(response_logged_out.content, response_logged_in.content)
+        html_li = BeautifulSoup(response_logged_in.content, 'html.parser')
+        response_li_content = html_li.find('section', 'profile')
+        self.assertEqual(response_lo_content, response_li_content)
 
     def test_public_profiles_display_public_albums(self):
-        """."""
+        """Test public profiles display public albums."""
         response = self.client.get(reverse('public_profile',
                                    kwargs={'request_username': 'mcgee'}))
         html = BeautifulSoup(response.content, 'html.parser')
@@ -224,7 +225,7 @@ class PublicProfileView(TestCase):
         self.assertIn(self.album_2.title, albums[0])
 
     def test_public_profiles_display_public_photos(self):
-        """."""
+        """Test public profiles display public photos."""
         response = self.client.get(reverse('public_profile',
                                    kwargs={'request_username': 'mcgee'}))
         html = BeautifulSoup(response.content, 'html.parser')
@@ -232,7 +233,7 @@ class PublicProfileView(TestCase):
         self.assertIn(self.photos_2.title, photos[0])
 
     def test_public_profiles_display_no_private_albums(self):
-        """."""
+        """Test public profiles don't display private albums."""
         response = self.client.get(reverse('public_profile',
                                    kwargs={'request_username': 'mcgee'}))
         html = BeautifulSoup(response.content, 'html.parser')
@@ -240,7 +241,7 @@ class PublicProfileView(TestCase):
         self.assertNotIn(self.album_1.title, albums[0])
 
     def test_public_profiles_display__private_photos(self):
-        """."""
+        """Test public profiles don't display private photos."""
         response = self.client.get(reverse('public_profile',
                                    kwargs={'request_username': 'mcgee'}))
         html = BeautifulSoup(response.content, 'html.parser')

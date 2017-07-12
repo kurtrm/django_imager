@@ -7,15 +7,6 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, Client, RequestFactory
 from imager_images.models import Photo, Album
 from bs4 import BeautifulSoup
-from imager_images.views import (
-    LibraryView,
-    AlbumDetailView,
-    AlbumListView,
-    AlbumCreate,
-    AlbumEdit,
-    PhotoDetailView,
-    PhotoListView
-)
 import faker
 import datetime
 import factory
@@ -31,7 +22,7 @@ class PhotoFactory(factory.django.DjangoModelFactory):
     """Factory for creating photos."""
 
     class Meta:
-        """."""
+        """Assign to Photo model."""
 
         model = Photo
 
@@ -53,7 +44,7 @@ class AlbumFactory(factory.django.DjangoModelFactory):
     """Factory for creating albums."""
 
     class Meta:
-        """."""
+        """Assign to Album model."""
 
         model = Album
 
@@ -129,7 +120,7 @@ class TestPhotoView(TestCase):
     """Test photo views."""
 
     def setUp(self):
-        """."""
+        """Create users, photos and albums."""
         user_1 = User(
             username='morgan',
             email='morgan@morgan.com'
@@ -200,7 +191,7 @@ class AlbumsTestModels(TestCase):
     """Test class for album models."""
 
     def setUp(self):
-        """."""
+        """Create a user, photos and albums."""
         user = User(
             username='morgan',
             email='morgan@morgan.com'
@@ -254,7 +245,7 @@ class TestLibraryView(TestCase):
     """Test library view."""
 
     def setUp(self):
-        """."""
+        """Create users, photos and albums."""
         user_1 = User(
             username='morgan',
             email='morgan@morgan.com'
@@ -345,7 +336,7 @@ class TestLibraryView(TestCase):
         self.client.force_login(self.user_1)
         response = self.client.get(reverse_lazy('library'))
         html = BeautifulSoup(response.content, 'html.parser')
-        album_cover = html.find('li', 'album').next_sibling.next_sibling
+        album_cover = html.find('img', 'album')
         tags = album_cover.attrs
         self.assertTrue(tags['alt'] == 'album cover')
 
@@ -354,7 +345,7 @@ class TestLibraryView(TestCase):
         self.client.force_login(self.user_3)
         response = self.client.get(reverse_lazy('library'))
         html = BeautifulSoup(response.content, 'html5lib')
-        album_cover = html.find('li', 'album').next_sibling.next_sibling
+        album_cover = html.find('img', 'album')
         tags = album_cover.attrs
         self.assertTrue(tags['alt'] == 'default cover image: camera')
 
@@ -363,7 +354,7 @@ class TestAlbumView(TestCase):
     """Test album views."""
 
     def setUp(self):
-        """."""
+        """Create users, photos and albums."""
         user_1 = User(
             username='morgan',
             email='morgan@morgan.com'
@@ -425,9 +416,13 @@ class TestAlbumView(TestCase):
     def test_albums_logged_in_logged_out_users_see_same_content(self):
         """View is the same regardless of auth."""
         logged_out_response = self.client.get(reverse_lazy('albums'))
+        html_lo = BeautifulSoup(logged_out_response.content, 'html5lib')
+        logged_out_content = html_lo.find('section', 'albums')
         self.client.force_login(self.user_1)
         logged_in_response = self.client.get(reverse_lazy('albums'))
-        self.assertEqual(logged_out_response.content, logged_in_response.content)
+        html_li = BeautifulSoup(logged_in_response.content, 'html5lib')
+        logged_in_content = html_li.find('section', 'albums')
+        self.assertEqual(logged_out_content, logged_in_content)
 
     def test_public_album_count(self):
         """Display albums match published album count."""
@@ -446,18 +441,22 @@ class TestAlbumView(TestCase):
         self.assertEqual(album_title, Album.objects.get(id=self.albums[0].id).title)
 
     def test_album_logged_in_logged_out_users_see_same_content(self):
-        """."""
+        """Album view displays same for logged in and logged out users."""
         logged_out_response = self.client.get(reverse_lazy('single_album', kwargs={'pk': self.albums[0].id}))
+        html_lo = BeautifulSoup(logged_out_response.content, 'html5lib')
+        logged_out_content = html_lo.find('section', 'album')
         self.client.force_login(self.user_1)
         logged_in_response = self.client.get(reverse_lazy('single_album', kwargs={'pk': self.albums[0].id}))
-        self.assertEqual(logged_out_response.content, logged_in_response.content)
+        html_in = BeautifulSoup(logged_in_response.content, 'html5lib')
+        logged_in_content = html_in.find('section', 'album')
+        self.assertEqual(logged_out_content, logged_in_content)
 
 
 class TestAddPhotos(TestCase):
     """Tests for verifying users can add photos."""
 
     def setUp(self):
-        """."""
+        """Create a user and a photo to upload."""
         user = User(
             username='morgan',
             email='morgan@morgan.com'
@@ -536,7 +535,7 @@ class TestPhotoEdit(TestCase):
     """Tests to verify a user can update an existing album."""
 
     def setUp(self):
-        """."""
+        """Create a user and photos."""
         user = User(
             username='morgan',
             email='morgan@morgan.com'
@@ -633,7 +632,7 @@ class TestAddAlbums(TestCase):
     """Tests for verifying users can add albums."""
 
     def setUp(self):
-        """."""
+        """Create a user and photos."""
         user = User(
             username='morgan',
             email='morgan@morgan.com'
@@ -715,7 +714,7 @@ class TestAlbumEdit(TestCase):
     """Tests to verify a user can update an existing album."""
 
     def setUp(self):
-        """."""
+        """Create a user, photos and an album."""
         user = User(
             username='morgan',
             email='morgan@morgan.com'
