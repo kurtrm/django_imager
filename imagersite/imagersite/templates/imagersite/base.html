@@ -6,7 +6,7 @@
 <body>
     <header>
         <nav>
-            {% block login%}
+            {% block login %}
                 {% if user.is_authenticated %}
                     <p>Hi, <a href='{% url "library" %}'>{{ user.username }}</a></p>
                     <a href='{% url "logout" %}'>

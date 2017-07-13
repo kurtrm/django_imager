@@ -12,20 +12,18 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
-from imagersite.custom_storages import StaticStorage, MediaStorage
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'bug')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = eval(os.environ.get('DEBUG', True))
+DEBUG = bool(eval(os.environ.get('DEBUG', True)))
 
 ALLOWED_HOSTS = ['http://ec2-13-59-234-227.us-east-2.compute.amazonaws.com/', '127.0.0.1', 'localhost']
 
@@ -134,9 +132,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
+
 if DEBUG:
     STATIC_URL = '/static/'
-    # STATIC_ROOT
     STATICFILES_DIR = [
         os.path.join(BASE_DIR, 'static'),
         '/var/www/static/'
@@ -145,10 +143,10 @@ if DEBUG:
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 else:
     AWS_STORAGE_BUCKET_NAME = 'django-imager-morgkurt'
-    AWS_ACCESS_KEY_ID = ''
-    AWS_SECRET_ACCESS_KEY = ''
+    AWS_ACCESS_KEY_ID = os.environ.get('IAM_USER_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('IAM_USER_SECRET_ACCESS_KEY')
 
-    AWS_CUSTOM_DOMAIN_NAME = 
+    AWS_S3_CUSTOM_DOMAIN = '%s.s3.us-east-2.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 
     STATICFILES_LOCATION = 'static'
     STATICFILES_STORAGE = 'imagersite.custom_storages.StaticStorage'
@@ -161,7 +159,6 @@ else:
     MEDIA_URL = 'https://{}/{}/'.format(
         AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION
     )
-
 
 
 LOGIN_REDIRECT_URL = 'profile'
