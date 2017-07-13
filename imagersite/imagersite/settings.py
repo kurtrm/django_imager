@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
-
+from imagersite.custom_storages import StaticStorage, MediaStorage
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -25,7 +25,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = eval(os.environ.get('DEBUG', True))
 
 ALLOWED_HOSTS = ['http://ec2-13-59-234-227.us-east-2.compute.amazonaws.com/', '127.0.0.1', 'localhost']
 
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'imager_profile',
     'imagersite',
     'registration',
+    'storages'
 ]
 
 MIDDLEWARE = [
@@ -133,18 +134,38 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
-STATIC_URL = '/static/'
-# STATIC_ROOT
-STATICFILES_DIR = [
-    os.path.join(BASE_DIR, 'static'),
-    '/var/www/static/'
-]
+if DEBUG:
+    STATIC_URL = '/static/'
+    # STATIC_ROOT
+    STATICFILES_DIR = [
+        os.path.join(BASE_DIR, 'static'),
+        '/var/www/static/'
+    ]
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+else:
+    AWS_STORAGE_BUCKET_NAME = 'django-imager-morgkurt'
+    AWS_ACCESS_KEY_ID = ''
+    AWS_SECRET_ACCESS_KEY = ''
+
+    AWS_CUSTOM_DOMAIN_NAME = 
+
+    STATICFILES_LOCATION = 'static'
+    STATICFILES_STORAGE = 'imagersite.custom_storages.StaticStorage'
+    STATIC_URL = 'https://{}/{}/'.format(
+        AWS_S3_CUSTOM_DOMAIN, STATICFILES_LOCATION
+    )
+
+    MEDIAFILES_LOCATION = 'media'
+    DEFAULT_FILE_STORAGE = 'imagersite.custom_storages.MediaStorage'
+    MEDIA_URL = 'https://{}/{}/'.format(
+        AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION
+    )
+
+
 
 LOGIN_REDIRECT_URL = 'profile'
 LOGOUT_REDIRECT_URL = 'home'
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
