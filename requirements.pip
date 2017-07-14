@@ -3,6 +3,8 @@ asn1crypto==0.22.0
 bcrypt==3.1.3
 beautifulsoup4==4.6.0
 boto==2.48.0
+boto3==1.4.4
+botocore==1.5.82
 bs4==0.0.1
 cffi==1.10.0
 coverage==4.4.1
@@ -10,12 +12,14 @@ decorator==4.0.11
 Django==1.11.2
 django-registration==2.2
 django-storages==1.6.3
+docutils==0.13.1
 factory-boy==2.8.1
 Faker==0.7.17
 html5lib==0.999999999
 idna==2.5
 jedi==0.10.2
 Jinja2==2.9.6
+jmespath==0.9.3
 MarkupSafe==1.0
 olefile==0.44
 pexpect==4.2.1
@@ -33,6 +37,7 @@ pytest-cov==2.5.1
 python-dateutil==2.6.0
 pytz==2017.2
 PyYAML==3.12
+s3transfer==0.1.10
 simplegeneric==0.8.1
 six==1.10.0
 -e git+https://github.com/mariocesar/sorl-thumbnail.git@7ce76bc1ef798a63cbf89b5df83de4da4b12e98d#egg=sorl_thumbnail
