@@ -1,14 +1,15 @@
 """."""
-from imager_images.models import Photo, Album
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
-from imager_profile.models import ImagerProfile
+from django.urls import reverse_lazy
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import UpdateView
-from django.urls import reverse_lazy
+from imager_images.models import Photo, Album
+from imager_profile.models import ImagerProfile
 from .forms import UserForm
 
 
-class ProfileView(TemplateView):
+class ProfileView(LoginRequiredMixin, TemplateView):
     """Class based view for private profiles."""
 
     template_name = 'imager_profile/profile.html'
@@ -36,7 +37,7 @@ class ProfileView(TemplateView):
         return context
 
 
-class ProfileEdit(UpdateView):
+class ProfileEdit(LoginRequiredMixin, UpdateView):
     """Class based profile edit view."""
 
     model = User

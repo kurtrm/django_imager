@@ -1,13 +1,14 @@
 """."""
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse_lazy
 from .models import Photo, Album
 
 
-class LibraryView(TemplateView):
+class LibraryView(LoginRequiredMixin, TemplateView):
     """List view for both albums and phots."""
 
     template_name = 'imager_images/library.html'
@@ -67,7 +68,7 @@ class AlbumDetailView(DetailView):
         return context
 
 
-class PhotoCreate(CreateView):
+class PhotoCreate(LoginRequiredMixin, CreateView):
     """Class-based view to create new photos."""
 
     model = Photo
@@ -82,7 +83,7 @@ class PhotoCreate(CreateView):
         return super(CreateView, self).form_valid(form)
 
 
-class PhotoEdit(UpdateView):
+class PhotoEdit(LoginRequiredMixin, UpdateView):
     """Class-based view to edit photos."""
 
     model = Photo
@@ -97,7 +98,7 @@ class PhotoEdit(UpdateView):
         return super(UpdateView, self).form_valid(form)
 
 
-class AlbumCreate(CreateView):
+class AlbumCreate(LoginRequiredMixin, CreateView):
     """Class-based view to create new albums."""
 
     model = Album
@@ -120,7 +121,7 @@ class AlbumCreate(CreateView):
         return super(CreateView, self).form_valid(form)
 
 
-class AlbumEdit(UpdateView):
+class AlbumEdit(LoginRequiredMixin, UpdateView):
     """Class-based view to create new albums."""
 
     model = Album

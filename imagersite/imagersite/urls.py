@@ -18,20 +18,9 @@ from django.conf.urls import url, include
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from django.contrib.auth.decorators import login_required
 from imagersite.views import HomeView
 from imager_profile.views import ProfileView, PublicProfileView, ProfileEdit
-from imager_images.views import (
-    LibraryView,
-    AlbumDetailView,
-    AlbumListView,
-    PhotoDetailView,
-    PhotoListView,
-    PhotoCreate,
-    PhotoEdit,
-    AlbumCreate,
-    AlbumEdit
-)
+
 
 urlpatterns = [
     url(r'^$', HomeView.as_view(), name='home'),
@@ -41,21 +30,9 @@ urlpatterns = [
         template_name='registration/login.html'), name='login'),
     url(r'^logout/$', auth_views.LogoutView.as_view(
         template_name='imagersite/home.html'), name='logout'),
-    url(r'^profile/$', login_required(ProfileView.as_view()), name='profile'),
-    url(r'^profile/edit/$', login_required(ProfileEdit.as_view()), name='profile_edit'),
-    url(r'^profile/(?P<request_username>\w+)/$', PublicProfileView.as_view(),
-        name='public_profile'),
-    url(r'^images/library/$', login_required(LibraryView.as_view()), name='library'),
-    url(r'^images/photos/(?P<pk>\d+)/$', PhotoDetailView.as_view(),
-        name='single_photo'),
-    url(r'^images/photos/add/$', login_required(PhotoCreate.as_view()), name='photo_add'),
-    url(r'^images/photos/$', PhotoListView.as_view(), name='photos'),
-    url(r'^images/photos/(?P<pk>\w+)/edit/$', login_required(PhotoEdit.as_view()), name='photo_edit'),
-    url(r'^images/albums/(?P<pk>\d+)/$', AlbumDetailView.as_view(),
-        name='single_album'),
-    url(r'^images/albums/$', AlbumListView.as_view(), name='albums'),
-    url(r'^images/albums/add/$', login_required(AlbumCreate.as_view()), name='album_add'),
-    url(r'^images/albums/(?P<pk>\w+)/edit/$', login_required(AlbumEdit.as_view()), name='album_edit')
+    url(r'^profile/', include('imager_profile.urls')),
+    url(r'^images/', include('imager_images.urls'))
+
 ]
 
 if settings.DEBUG:
