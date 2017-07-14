@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('SECRET_KEY', 'bug')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(eval(os.environ.get('DEBUG', False)))
+DEBUG = bool(eval(os.environ.get('DEBUG', 'False')))
 
 ALLOWED_HOSTS = ['http://ec2-13-59-234-227.us-east-2.compute.amazonaws.com/', '127.0.0.1', 'localhost']
 
