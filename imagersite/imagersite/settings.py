@@ -24,7 +24,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'bug')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(eval(os.environ.get('DEBUG', 'False')))
 
-ALLOWED_HOSTS = ['http://ec2-13-59-234-227.us-east-2.compute.amazonaws.com/', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['ec2-13-59-234-227.us-east-2.compute.amazonaws.com', '127.0.0.1', 'localhost']
 
 ACCOUNT_ACTIVATION_DAYS = 7
 
