@@ -49,6 +49,11 @@ class PhotoFactory(factory.django.DjangoModelFactory):
             'camera.png'), 'rb').read(),
         content_type='image/jpeg')
 
+   def tearDown(self):
+    """Teardown when tests complete."""
+    to_delete = os.path.join(MEDIA_ROOT, 'photos', 'testing*.png')
+    os.system('rm -rf ' + to_delete)
+
 
 class Registration(TestCase):
     """Tests for registration process."""
