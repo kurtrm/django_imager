@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.core import mail
 from bs4 import BeautifulSoup
 from imagersite.views import HomeView
+from imagersite.settings import MEDIA_ROOT
 from imager_images.models import Photo
 from django.core.files.uploadedfile import SimpleUploadedFile
 import faker
@@ -48,11 +49,6 @@ class PhotoFactory(factory.django.DjangoModelFactory):
             'static/assets',
             'camera.png'), 'rb').read(),
         content_type='image/jpeg')
-
-   def tearDown(self):
-    """Teardown when tests complete."""
-    to_delete = os.path.join(MEDIA_ROOT, 'photos', 'testing*.png')
-    os.system('rm -rf ' + to_delete)
 
 
 class Registration(TestCase):
@@ -156,6 +152,11 @@ class LoginLogout(TestCase):
         photos_2.save()
         self.photos_1 = photos_1
         self.photos_2 = photos_2
+
+    def tearDown(self):
+        """Teardown when tests complete."""
+        to_delete = os.path.join(MEDIA_ROOT, 'user_images', 'example*.jpg')
+        os.system('rm -rf ' + to_delete)
 
     def test_home_view_returns_status_code_200(self):
         """Test home view has status 200."""

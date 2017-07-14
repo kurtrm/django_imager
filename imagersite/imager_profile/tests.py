@@ -4,6 +4,7 @@ from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from imager_profile.models import ImagerProfile
 from imager_images.models import Photo, Album
+from imagersite.settings import MEDIA_ROOT
 from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
 from bs4 import BeautifulSoup
@@ -202,6 +203,11 @@ class PublicProfileView(TestCase):
         self.photos_2 = photos_2
         self.album_1 = album_1
         self.album_2 = album_2
+
+    def tearDown(self):
+        """Teardown when tests complete."""
+        to_delete = os.path.join(MEDIA_ROOT, 'user_images', 'example*.jpg')
+        os.system('rm -rf ' + to_delete)
 
     def test_logged_logged_out_in_users_see_same_stuff(self):
         """Test logged out and logged in users see the same public profile."""
