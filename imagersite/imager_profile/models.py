@@ -22,9 +22,9 @@ class ImagerProfile(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     location = models.CharField(max_length=50, default='Seattle')
-    age = models.IntegerField(null=True)
+    age = models.IntegerField(null=True, blank=True)
     job = models.CharField(max_length=50, default='')
-    website = models.URLField(null=True)
+    website = models.URLField(null=True, blank=True)
     objects = models.Manager()
     active = ProfileManager()
 

@@ -2,6 +2,7 @@
 from django.contrib.auth.models import User
 from imager_profile.models import ImagerProfile
 from django import forms
+from django.forms.widgets import PasswordInput
 
 
 class UserForm(forms.ModelForm):
@@ -11,4 +12,7 @@ class UserForm(forms.ModelForm):
         """Assign to User and select fields."""
 
         model = User
-        fields = ['username', 'password', 'email', 'first_name', 'last_name']
+        fields = []
+        widgets = {
+            'password': PasswordInput()
+        }
