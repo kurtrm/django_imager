@@ -255,3 +255,4 @@ class PublicProfileView(TestCase):
         html = BeautifulSoup(response.content, 'html.parser')
         p_tag = html.find_all('p')
         self.assertIn('user doesn\'t exist', p_tag[0])
+
