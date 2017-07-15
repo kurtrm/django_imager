@@ -13,6 +13,3 @@ class UserForm(forms.ModelForm):
 
         model = User
         fields = []
-        widgets = {
-            'password': PasswordInput()
-        }
