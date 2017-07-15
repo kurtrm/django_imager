@@ -22,7 +22,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('SECRET_KEY', 'bug')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(eval(os.environ.get('DEBUG', 'False')))
+# DEBUG = bool(eval(os.environ.get('DEBUG', 'False')))
+
+DEBUG = False
 
 ALLOWED_HOSTS = ['ec2-13-59-234-227.us-east-2.compute.amazonaws.com', '127.0.0.1', 'localhost']
 
@@ -146,7 +148,9 @@ else:
     AWS_ACCESS_KEY_ID = os.environ.get('IAM_USER_ACCESS_KEY_ID')
     AWS_SECRET_ACCESS_KEY = os.environ.get('IAM_USER_SECRET_ACCESS_KEY')
 
-    AWS_S3_CUSTOM_DOMAIN = '%s.s3.us-east-2.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+    AWS_S3_CUSTOM_DOMAIN = '{}.s3.amazonaws.com'.format(
+        AWS_STORAGE_BUCKET_NAME
+    )
 
     STATICFILES_LOCATION = 'static'
     STATICFILES_STORAGE = 'imagersite.custom_storages.StaticStorage'
