@@ -25,9 +25,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(eval(os.environ.get('DEBUG', 'False')))
 
-ALLOWED_HOSTS = ['http://ec2-13-59-234-227.us-east-2.compute.amazonaws.com/', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['ec2-54-244-38-26.us-west-2.compute.amazonaws.com', '127.0.0.1', 'localhost']
 
 ACCOUNT_ACTIVATION_DAYS = 7
 
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'imager_profile',
     'imagersite',
     'registration',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -130,21 +131,36 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.11/howto/static-files/
+if not DEBUG:
+    # Amazon Web Services Configuration
+    AWS_STORAGE_BUCKET_NAME = 'djimagerbucket'
+    AWS_ACCESS_KEY_ID = os.environ.get('IAM_USER_ACCESS_KEY_ID', '')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('IAM_USER_SECRET_ACCESS_KEY', '')
+    AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 
-STATIC_URL = '/static/'
-# STATIC_ROOT
-STATICFILES_DIR = [
-    os.path.join(BASE_DIR, 'static'),
-    '/var/www/static/'
-]
+    STATICFILES_LOCATION = 'static'
+    STATICFILES_STORAGE = 'imagersite.custom_storages.StaticStorage'
+    STATIC_URL = 'https://{}/{}/'.format(AWS_S3_CUSTOM_DOMAIN, STATICFILES_LOCATION)
 
+    MEDIAFILES_LOCATION = 'media'
+    DEFAULT_FILE_STORAGE = 'imagersite.custom_storages.MediaStorage'
+    MEDIA_URL = 'htts://{}/{}/'.format(AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
+
+else:
+    # Local config
+    STATIC_URL = '/static/'
+    STATICFILES_DIR = [
+        os.path.join(BASE_DIR, 'static'),
+        '/var/www/static/'
+    ]
+
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+# Login redirects
 LOGIN_REDIRECT_URL = 'profile'
 LOGOUT_REDIRECT_URL = 'home'
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
