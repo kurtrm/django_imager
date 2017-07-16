@@ -27,11 +27,10 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['http://ec2-13-59-234-227.us-east-2.compute.amazonaws.com/', '127.0.0.1', 'localhost']
 
 ACCOUNT_ACTIVATION_DAYS = 7
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Application definition
 
@@ -147,4 +146,12 @@ LOGOUT_REDIRECT_URL = 'home'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-THUMBNAIL_DEBUG = True
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'djimager'
+EMAIL_HOST_PASSWORD = os.environ.get('GMAIL_PW')
+DEFAULT_FROM_EMAIL = 'djimager@gmail.com'
+DEFAULT_TO_EMAIL = 'morganelle@gmail.com'

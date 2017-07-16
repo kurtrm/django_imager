@@ -1,22 +1,11 @@
 {% extends 'imagersite/base.html' %}
 {% load static %}
-{% block login%}
-    {% if user.is_authenticated %}
-        <p>Hi, {{ user.username }}</p>
-        <a href='/logout'>
-            <button>Logout</button>
-        </a>
-        {% else %}
-        <button>
-            <a href='/login'>Login</a>
-        </button>
-        <button>
-            <a href='/accounts/register'>Register</a>
-        </button>
-    {% endif %}
-{% endblock %}
 {% block content %}
     {{ content }}
-    <p>Long-tail big data The Cloud iterative buzzword. Gen Y cross-device drone engagement. Emerging ROI social buttons verticals hit the like button. Top influencers vertical-specific viral pivot alignment. Click-through rate reaching out ideation The Cloud hashtag organic reach. Branding top influencers cross-device. Pass the clap iterative cross-device omnichannel target influencer top influencers. Flat design SEO synergies conversions B2B millennials reaching out.</p>
-    <img src="{{ image|random }}" />
+    <p>Welcome to Imager, your place to store and share photos.</p>
+    {% if image %}
+        <img src="{{ image|random }}" />
+    {% else %}
+        <img src="{% static  'assets/jerry-kiesewetter-192478.jpg' %}" />
+    {% endif %}
  {% endblock %}

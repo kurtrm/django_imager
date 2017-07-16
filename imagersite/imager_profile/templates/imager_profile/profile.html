@@ -12,5 +12,6 @@
     <li>Public: {{ albums_pub }} album{{ albums_pub|pluralize }}</li>
     <li>Private: {{ albums_priv }} album{{ albums_priv|pluralize }}</li>
 </ul>
-<a  href="{% url 'library' %}">Visit your library</a>
+<p><a href="{% url 'library' %}">Visit your library</a></p>
+<p><a href="{% url 'profile_edit' %}">Update your profile</a></p>
 {% endblock %} 

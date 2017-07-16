@@ -4,8 +4,9 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.urls import reverse, reverse_lazy
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import TestCase, Client, RequestFactory
+from django.test import TestCase, Client
 from imager_images.models import Photo, Album
+from imagersite.settings import MEDIA_ROOT
 from bs4 import BeautifulSoup
 import faker
 import datetime
@@ -22,7 +23,7 @@ class PhotoFactory(factory.django.DjangoModelFactory):
     """Factory for creating photos."""
 
     class Meta:
-        """."""
+        """Assign to Photo model."""
 
         model = Photo
 
@@ -44,7 +45,7 @@ class AlbumFactory(factory.django.DjangoModelFactory):
     """Factory for creating albums."""
 
     class Meta:
-        """."""
+        """Assign to Album model."""
 
         model = Album
 
@@ -71,6 +72,11 @@ class PhotoTestModels(TestCase):
         photo.user = self.user
         photo.save()
         self.photo = photo
+
+    def tearDown(self):
+        """Teardown when tests complete."""
+        to_delete = os.path.join(MEDIA_ROOT, 'user_images', 'example*.jpg')
+        os.system('rm -rf ' + to_delete)
 
     def test_upload_image_adds_new_photo_instance(self):
         """New photo has been created."""
@@ -120,7 +126,7 @@ class TestPhotoView(TestCase):
     """Test photo views."""
 
     def setUp(self):
-        """."""
+        """Create users, photos and albums."""
         user_1 = User(
             username='morgan',
             email='morgan@morgan.com'
@@ -179,6 +185,11 @@ class TestPhotoView(TestCase):
         self.albums = albums
         self.client = Client()
 
+    def tearDown(self):
+        """Teardown when tests complete."""
+        to_delete = os.path.join(MEDIA_ROOT, 'user_images', 'example*.jpg')
+        os.system('rm -rf ' + to_delete)
+
     def test_image_count_correct(self):
         """Test img element count is equal to public images."""
         response = self.client.get(reverse_lazy('photos'))
@@ -191,7 +202,7 @@ class AlbumsTestModels(TestCase):
     """Test class for album models."""
 
     def setUp(self):
-        """."""
+        """Create a user, photos and albums."""
         user = User(
             username='morgan',
             email='morgan@morgan.com'
@@ -212,6 +223,11 @@ class AlbumsTestModels(TestCase):
             album.photos.add(photos[idx])
             album.cover = photos[idx]
         self.albums = albums
+
+    def tearDown(self):
+        """Teardown when tests complete."""
+        to_delete = os.path.join(MEDIA_ROOT, 'user_images', 'example*.jpg')
+        os.system('rm -rf ' + to_delete)
 
     def test_delete_user_with_albums_albums_deleted(self):
         """Delete user deletes albums."""
@@ -245,7 +261,7 @@ class TestLibraryView(TestCase):
     """Test library view."""
 
     def setUp(self):
-        """."""
+        """Create users, photos and albums."""
         user_1 = User(
             username='morgan',
             email='morgan@morgan.com'
@@ -303,6 +319,11 @@ class TestLibraryView(TestCase):
         self.photos_2 = photos_2
         self.albums = albums
         self.client = Client()
+
+    def tearDown(self):
+        """Teardown when tests complete."""
+        to_delete = os.path.join(MEDIA_ROOT, 'user_images', 'example*.jpg')
+        os.system('rm -rf ' + to_delete)
 
     def test_logged_out_user_redirects(self):
         """Logged out user redirects to login."""
@@ -336,7 +357,7 @@ class TestLibraryView(TestCase):
         self.client.force_login(self.user_1)
         response = self.client.get(reverse_lazy('library'))
         html = BeautifulSoup(response.content, 'html.parser')
-        album_cover = html.find('li', 'album').next_sibling.next_sibling
+        album_cover = html.find('img', 'album')
         tags = album_cover.attrs
         self.assertTrue(tags['alt'] == 'album cover')
 
@@ -345,7 +366,7 @@ class TestLibraryView(TestCase):
         self.client.force_login(self.user_3)
         response = self.client.get(reverse_lazy('library'))
         html = BeautifulSoup(response.content, 'html5lib')
-        album_cover = html.find('li', 'album').next_sibling.next_sibling
+        album_cover = html.find('img', 'album')
         tags = album_cover.attrs
         self.assertTrue(tags['alt'] == 'default cover image: camera')
 
@@ -354,7 +375,7 @@ class TestAlbumView(TestCase):
     """Test album views."""
 
     def setUp(self):
-        """."""
+        """Create users, photos and albums."""
         user_1 = User(
             username='morgan',
             email='morgan@morgan.com'
@@ -413,12 +434,21 @@ class TestAlbumView(TestCase):
         self.albums = albums
         self.client = Client()
 
+    def tearDown(self):
+        """Teardown when tests complete."""
+        to_delete = os.path.join(MEDIA_ROOT, 'user_images', 'example*.jpg')
+        os.system('rm -rf ' + to_delete)
+
     def test_albums_logged_in_logged_out_users_see_same_content(self):
         """View is the same regardless of auth."""
         logged_out_response = self.client.get(reverse_lazy('albums'))
+        html_lo = BeautifulSoup(logged_out_response.content, 'html5lib')
+        logged_out_content = html_lo.find('section', 'albums')
         self.client.force_login(self.user_1)
         logged_in_response = self.client.get(reverse_lazy('albums'))
-        self.assertEqual(logged_out_response.content, logged_in_response.content)
+        html_li = BeautifulSoup(logged_in_response.content, 'html5lib')
+        logged_in_content = html_li.find('section', 'albums')
+        self.assertEqual(logged_out_content, logged_in_content)
 
     def test_public_album_count(self):
         """Display albums match published album count."""
@@ -437,18 +467,22 @@ class TestAlbumView(TestCase):
         self.assertEqual(album_title, Album.objects.get(id=self.albums[0].id).title)
 
     def test_album_logged_in_logged_out_users_see_same_content(self):
-        """."""
+        """Album view displays same for logged in and logged out users."""
         logged_out_response = self.client.get(reverse_lazy('single_album', kwargs={'pk': self.albums[0].id}))
+        html_lo = BeautifulSoup(logged_out_response.content, 'html5lib')
+        logged_out_content = html_lo.find('section', 'album')
         self.client.force_login(self.user_1)
         logged_in_response = self.client.get(reverse_lazy('single_album', kwargs={'pk': self.albums[0].id}))
-        self.assertEqual(logged_out_response.content, logged_in_response.content)
+        html_in = BeautifulSoup(logged_in_response.content, 'html5lib')
+        logged_in_content = html_in.find('section', 'album')
+        self.assertEqual(logged_out_content, logged_in_content)
 
 
 class TestAddPhotos(TestCase):
     """Tests for verifying users can add photos."""
 
     def setUp(self):
-        """."""
+        """Create a user and a photo to upload."""
         user = User(
             username='morgan',
             email='morgan@morgan.com'
@@ -464,6 +498,11 @@ class TestAddPhotos(TestCase):
                 'New-smaller-Coca-Cola-can-001.jpg'), 'rb').read(),
             content_type='image/jpeg')
 
+    def tearDown(self):
+        """Teardown when tests complete."""
+        to_delete = os.path.join(MEDIA_ROOT, 'user_images', 'example*.jpg')
+        os.system('rm -rf ' + to_delete)
+
     def test_user_must_be_logged_in_to_photo_add(self):
         """User must be logged in to add photos."""
         response = self.client.get(reverse_lazy('photo_add'))
@@ -476,7 +515,7 @@ class TestAddPhotos(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_user_redirects_after_successful_post(self):
-        """."""
+        """Test that a successful post redirects to the library."""
         # from django.views.generic.edit import CreateView
         self.client.force_login(self.user)
         response = self.client.post(reverse_lazy('photo_add'),
@@ -523,11 +562,113 @@ class TestAddPhotos(TestCase):
         self.assertEqual(1, len(photos))
 
 
+class TestPhotoEdit(TestCase):
+    """Tests to verify a user can update an existing album."""
+
+    def setUp(self):
+        """Create a user and photos."""
+        user = User(
+            username='morgan',
+            email='morgan@morgan.com'
+        )
+        user.save()
+        self.user = user
+
+        photos = [PhotoFactory.build() for i in range(10)]
+        for photo in photos:
+            photo.user = user
+            photo.published = 'PB'
+            photo.save()
+        photos[0].published = 'PV'
+        photos[0].save()
+
+        self.photos = photos
+        self.client = Client()
+
+    def tearDown(self):
+        """Teardown when tests complete."""
+        to_delete = os.path.join(MEDIA_ROOT, 'user_images', 'example*.jpg')
+        os.system('rm -rf ' + to_delete)
+
+    def test_user_must_be_logged_in_to_edit_album(self):
+        """User must be logged in to add photo."""
+        photos = Photo.objects.all()
+        photo_id = photos[2].id
+        response = self.client.get(reverse_lazy('photo_edit', kwargs={'pk': str(photo_id)}))
+        self.assertRedirects(response,
+                             '/accounts/login/?next=/images/photos/{}/edit/'.format(photo_id))
+
+    def test_logged_in_user_gets_200(self):
+        """Logged in user gets 200 status on photo edit page."""
+        photos = Photo.objects.all()
+        photo_id = photos[2].id
+        self.client.force_login(self.user)
+        response = self.client.get(reverse_lazy('photo_edit', kwargs={'pk': str(photo_id)}))
+        self.assertEqual(response.status_code, 200)
+
+    def test_default_form_values_match_database(self):
+        """Form populates with correct default values for album."""
+        photos = Photo.objects.all()
+        photo = photos[2]
+        photo_id = photo.id
+        self.client.force_login(self.user)
+        response = self.client.get(reverse_lazy('photo_edit', kwargs={'pk': str(photo_id)}))
+        html = BeautifulSoup(response.content, 'html5lib')
+        description = html.find(id='id_description')
+        title = html.find(id='id_title')
+        published = html.find(id='id_published').next_element.next_element
+        self.assertEqual(description.attrs['value'], photo.description)
+        self.assertEqual(title.attrs['value'], photo.title)
+        self.assertEqual(published.attrs['value'], photo.published)
+
+    def test_successful_edit_redirects(self):
+        """Successful edit redirects to library."""
+        self.client.force_login(self.user)
+        photos = Photo.objects.all()
+        photo = photos[1]
+        photo_id = photo.id
+        response = self.client.post(reverse_lazy('photo_edit', kwargs={'pk': str(photo_id)}),
+                                    {'title': 'New Test Photo',
+                                     'description': 'Short description goes here.',
+                                     'published': 'PV',
+                                     'photo': self.photos[3]})
+        self.assertRedirects(response, '/images/library/')
+
+    def test_successful_edit_doesnt_add_new_photo(self):
+        """Successful edit redirects to library."""
+        self.client.force_login(self.user)
+        photo_count = Photo.objects.count()
+        photos = Photo.objects.all()
+        photo_id = photos[0].id
+        self.client.post(reverse_lazy('photo_edit', kwargs={'pk': str(photo_id)}),
+                         {'title': 'New Test Photo',
+                          'description': 'Short description goes here.',
+                          'published': 'PV',
+                          'photo': self.photos[3]})
+        photo_count_after = Photo.objects.count()
+        self.assertEqual(photo_count, photo_count_after)
+
+    def test_successful_edit_updates_db(self):
+        """Successful edit updates object in database."""
+        self.client.force_login(self.user)
+        photos = Photo.objects.all()
+        photo_id = photos[0].id
+        self.client.post(reverse_lazy('photo_edit', kwargs={'pk': str(photo_id)}),
+                         {'title': 'Updated title',
+                          'description': 'New photo description',
+                          'published': 'PB',
+                          'photo': self.photos[3]})
+        updated_photo = Photo.objects.get(id=photo_id)
+        self.assertEqual(updated_photo.title, 'Updated title')
+        self.assertEqual(updated_photo.description, 'New photo description')
+        self.assertEqual(updated_photo.published, 'PB')
+
+
 class TestAddAlbums(TestCase):
     """Tests for verifying users can add albums."""
 
     def setUp(self):
-        """."""
+        """Create a user and photos."""
         user = User(
             username='morgan',
             email='morgan@morgan.com'
@@ -538,6 +679,11 @@ class TestAddAlbums(TestCase):
         photo.user = self.user
         photo.save()
         self.photo = photo
+
+    def tearDown(self):
+        """Teardown when tests complete."""
+        to_delete = os.path.join(MEDIA_ROOT, 'user_images', 'example*.jpg')
+        os.system('rm -rf ' + to_delete)
 
     def test_user_must_be_logged_in_to_add_album(self):
         """User must be logged in to add album."""
@@ -550,7 +696,7 @@ class TestAddAlbums(TestCase):
         response = self.client.get(reverse_lazy('album_add'))
         self.assertEqual(response.status_code, 200)
 
-    def test_form_is_valid_create_album(self):
+    def test_form_post_redirects(self):
         """Test user is redirected after successful post."""
         self.client.force_login(self.user)
         photo = Photo.objects.all()
@@ -564,7 +710,7 @@ class TestAddAlbums(TestCase):
         self.assertRedirects(response, '/images/library/')
 
     def test_user_cant_submit_album_without_photo(self):
-        """."""
+        """Test adding album requires photos."""
         self.client.force_login(self.user)
         response = self.client.post(reverse_lazy('album_add'),
                                     {'title': 'Test Album',
@@ -603,3 +749,125 @@ class TestAddAlbums(TestCase):
         html = BeautifulSoup(response.content, 'html.parser')
         albums = html.find_all('li', 'album')
         self.assertEqual(1, len(albums))
+
+
+class TestAlbumEdit(TestCase):
+    """Tests to verify a user can update an existing album."""
+
+    def setUp(self):
+        """Create a user, photos and an album."""
+        user = User(
+            username='morgan',
+            email='morgan@morgan.com'
+        )
+        user.save()
+        self.user = user
+
+        photos = [PhotoFactory.build() for i in range(10)]
+        for photo in photos:
+            photo.user = user
+            photo.published = 'PB'
+            photo.save()
+        photos[0].published = 'PV'
+        photos[0].save()
+
+        album = AlbumFactory.build()
+        album.user = user
+        album.published = 'PB'
+        album.cover = photos[1]
+        album.save()
+
+        for photo in photos:
+            album.photos.add(photo)
+            album.save()
+
+        self.photos = photos
+        self.albums = album
+        self.client = Client()
+
+    def tearDown(self):
+        """Teardown when tests complete."""
+        to_delete = os.path.join(MEDIA_ROOT, 'user_images', 'example*.jpg')
+        os.system('rm -rf ' + to_delete)
+
+    def test_user_must_be_logged_in_to_edit_album(self):
+        """User must be logged in to add album."""
+        albums = Album.objects.all()
+        album_id = albums[0].id
+        response = self.client.get(reverse_lazy('album_edit', kwargs={'pk': str(album_id)}))
+        self.assertRedirects(response,
+                             '/accounts/login/?next=/images/albums/{}/edit/'.format(album_id))
+
+    def test_logged_in_user_gets_200(self):
+        """Logged in user gets 200 status on album edit page."""
+        albums = Album.objects.all()
+        album_id = albums[0].id
+        self.client.force_login(self.user)
+        response = self.client.get(reverse_lazy('album_edit', kwargs={'pk': str(album_id)}))
+        self.assertEqual(response.status_code, 200)
+
+    def test_default_form_values_match_database(self):
+        """Form populates with correct default values for album."""
+        albums = Album.objects.all()
+        album_id = albums[0].id
+        self.client.force_login(self.user)
+        response = self.client.get(reverse_lazy('album_edit', kwargs={'pk': str(album_id)}))
+        html = BeautifulSoup(response.content, 'html5lib')
+        description = html.find(id='id_description')
+        title = html.find(id='id_title')
+        published = html.find(id='id_published').next_element.next_element
+        self.assertEqual(description.attrs['value'], albums[0].description)
+        self.assertEqual(title.attrs['value'], albums[0].title)
+        self.assertEqual(published.attrs['value'], albums[0].published)
+
+    def test_successful_edit_redirects(self):
+        """Successful edit redirects to library."""
+        self.client.force_login(self.user)
+        albums = Album.objects.all()
+        album_id = albums[0].id
+        photos = Photo.objects.all()
+        photo_id = photos[0].id
+        response = self.client.post(reverse_lazy('album_edit', kwargs={'pk': str(album_id)}),
+                                    {'title': 'Test Album',
+                                     'description': 'Short description goes here',
+                                     'photos': photo_id,
+                                     'cover': '',
+                                     'published': 'PB'})
+        self.assertRedirects(response, '/images/library/')
+
+    def test_successful_edit_doesnt_add_new_album(self):
+        """Successful edit redirects to library."""
+        self.client.force_login(self.user)
+        albums = Album.objects.all()
+        album_id = albums[0].id
+        album_count_before = Album.objects.count()
+        photos = Photo.objects.all()
+        photo_id = photos[0].id
+        self.client.post(reverse_lazy('album_edit', kwargs={'pk': str(album_id)}),
+                         {'title': 'Test Album',
+                          'description': 'Short description goes here',
+                          'photos': photo_id,
+                          'cover': '',
+                          'published': 'PB'})
+        album_count_after = Album.objects.count()
+        self.assertEqual(album_count_before, album_count_after)
+
+    def test_successful_edit_updates_db(self):
+        """Successful edit updates the db."""
+        self.client.force_login(self.user)
+        albums = Album.objects.all()
+        album_id = albums[0].id
+        photos = Photo.objects.all()
+        photo_id = photos[0].id
+        photo_cover = photos[1].id
+        self.client.post(reverse_lazy('album_edit', kwargs={'pk': str(album_id)}),
+                         {'title': 'Updated title',
+                          'description': 'Brand new description',
+                          'photos': photo_id,
+                          'cover': photo_cover,
+                          'published': 'PV'})
+        updated_album = Album.objects.get(id=album_id)
+        self.assertEqual(updated_album.title, 'Updated title')
+        self.assertEqual(updated_album.description, 'Brand new description')
+        self.assertEqual(updated_album.cover.id, photo_cover)
+        self.assertEqual(updated_album.published, 'PV')

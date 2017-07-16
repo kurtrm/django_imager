@@ -2,7 +2,7 @@
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.urls import reverse, reverse_lazy
 from .models import Photo, Album
 
@@ -39,11 +39,6 @@ class PhotoDetailView(DetailView):
 
     template_name = 'imager_images/photo.html'
     model = Photo
-
-    def get_context_data(self, **kwargs):
-        """Build context to create view."""
-        context = super(PhotoDetailView, self).get_context_data(**kwargs)
-        return context
 
 
 class AlbumListView(ListView):
@@ -87,6 +82,21 @@ class PhotoCreate(CreateView):
         return super(CreateView, self).form_valid(form)
 
 
+class PhotoEdit(UpdateView):
+    """Class-based view to edit photos."""
+
+    model = Photo
+    fields = ['title', 'description', 'published', 'photo']
+    success_url = reverse_lazy('library')
+
+    def form_valid(self, form):
+        """Identify form data with user and save in db."""
+        self.object = form.save(commit=False)
+        self.object.user = self.request.user
+        self.object.save()
+        return super(UpdateView, self).form_valid(form)
+
+
 class AlbumCreate(CreateView):
     """Class-based view to create new albums."""
 
@@ -108,3 +118,26 @@ class AlbumCreate(CreateView):
         self.object.user = self.request.user
         self.object.save()
         return super(CreateView, self).form_valid(form)
+
+
+class AlbumEdit(UpdateView):
+    """Class-based view to create new albums."""
+
+    model = Album
+    fields = ['title', 'description', 'photos', 'cover', 'published']
+    success_url = reverse_lazy('library')
+
+    def get_form(self):
+        """Update form fields with photos belonging to user."""
+        form = super(AlbumEdit, self).get_form()
+        user_photos = Photo.objects.filter(user=self.request.user)
+        form.fields['photos'].queryset = user_photos
+        form.fields['cover'].queryset = user_photos
+        return form
+
+    def form_valid(self, form):
+        """Identify form data with user and save in db."""
+        self.object = form.save(commit=False)
+        self.object.user = self.request.user
+        self.object.save()
+        return super(UpdateView, self).form_valid(form)
