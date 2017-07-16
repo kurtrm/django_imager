@@ -6,6 +6,6 @@
     {% if image %}
         <img src="{{ image|random }}" />
     {% else %}
-        <img src="/static/assets/jerry-kiesewetter-192478.jpg" />
+        <img src="{% static  'assets/jerry-kiesewetter-192478.jpg' %}" />
     {% endif %}
  {% endblock %}
