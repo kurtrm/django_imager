@@ -9,9 +9,16 @@ Kurt Maurer
 Morgan Nomura
 
 
-## Installation
+## Local installation
 - Create a virtual environment
 - Pip install Django, ipython, factory boy, psycopg2
+- Create a database
+- Add the following environmental variables:
+    - SECRET_KEY (set to some string)
+    - DATABASE_NAME (set to the name of the database you created)
+    - DATABASE_HOST='127.0.0.1'
+    - DEBUG='True'
+- from the imagersite directory, run: ```./manage.py migrate```
 
 ## Serve locally
 In the terminal, enter: 
@@ -27,3 +34,4 @@ MIT
 
 ## Attribution
 - Thank you to Ely Paysinger and Carlos Cadena for their assistance with file uploads from the client.
+- Additional thanks to Ely Paysinger for assistance on connecting email functionality and his constant willingness to help out with bugs not of his own making.
