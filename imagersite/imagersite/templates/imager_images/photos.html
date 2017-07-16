@@ -3,7 +3,7 @@
 {% block content %}
 <p>Photos</p>
 <ul>
-    {% for photo in photos %}
+    {% for photo in photo_list %}
         <li>{{ photo.title }}</li>
         {% thumbnail photo.photo "200x200" crop="center" as im %}
             <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">

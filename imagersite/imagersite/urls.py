@@ -18,35 +18,39 @@ from django.conf.urls import url, include
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from imagersite.views import home_view
-from imager_profile.views import profile_view, public_profile
+from django.contrib.auth.decorators import login_required
+from imagersite.views import HomeView
+from imager_profile.views import ProfileView, PublicProfileView
 from imager_images.views import (
-    library,
-    albums_view,
-    photos_view,
-    single_album_view,
-    single_photo_view
+    LibraryView,
+    AlbumDetailView,
+    AlbumListView,
+    PhotoDetailView,
+    PhotoListView,
+    PhotoCreate,
+    AlbumCreate
 )
 
 urlpatterns = [
-    url(r'^$', home_view, name='home'),
+    url(r'^$', HomeView.as_view(), name='home'),
     url(r'^accounts/', include('registration.backends.hmac.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^login/$', auth_views.LoginView.as_view(
         template_name='registration/login.html'), name='login'),
     url(r'^logout/$', auth_views.LogoutView.as_view(
         template_name='imagersite/home.html'), name='logout'),
-    url(r'^profile/$', profile_view, name='profile'),
-    url(r'^profile/(?P<request_username>\w+)/$', public_profile,
+    url(r'^profile/$', login_required(ProfileView.as_view()), name='profile'),
+    url(r'^profile/(?P<request_username>\w+)/$', PublicProfileView.as_view(),
         name='public_profile'),
-    url(r'^images/library/$', library, name='library'),
-    url(r'^images/photos/(?P<photo_id>\d+)/$', single_photo_view,
+    url(r'^images/library/$', login_required(LibraryView.as_view()), name='library'),
+    url(r'^images/photos/(?P<pk>\d+)/$', PhotoDetailView.as_view(),
         name='single_photo'),
-    url(r'^images/photos/$', photos_view, name='photos'),
-    url(r'^images/albums/(?P<album_id>\d+)/$', single_album_view,
+    url(r'^images/photos/add/$', login_required(PhotoCreate.as_view()), name='photo_add'),
+    url(r'^images/photos/$', PhotoListView.as_view(), name='photos'),
+    url(r'^images/albums/(?P<pk>\d+)/$', AlbumDetailView.as_view(),
         name='single_album'),
-    url(r'^images/albums/$', albums_view, name='albums'),
-    # url(r'^', include('django.contrib.auth.urls')),
+    url(r'^images/albums/$', AlbumListView.as_view(), name='albums'),
+    url(r'^images/albums/add/$', login_required(AlbumCreate.as_view()), name='album_add')
 ]
 
 if settings.DEBUG:

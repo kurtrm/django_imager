@@ -1,10 +1,10 @@
 """Tests for config route and registration."""
 from django.test import TestCase, Client, RequestFactory
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.contrib.auth.models import User
 from django.core import mail
 from bs4 import BeautifulSoup
-from imagersite.views import home_view
+from imagersite.views import HomeView
 from imager_images.models import Photo
 from django.core.files.uploadedfile import SimpleUploadedFile
 import faker
@@ -153,8 +153,9 @@ class LoginLogout(TestCase):
 
     def test_home_view_returns_status_code_200(self):
         """Test home view has status 200."""
-        get_req = self.req_factory.get('/')
-        response = home_view(get_req)
+        request = RequestFactory().get('/')
+        view = HomeView.as_view(template_name='home.html')
+        response = view(request)
         self.assertTrue(response.status_code == 200)
 
     def test_unauthenticated_user_sees_login(self):

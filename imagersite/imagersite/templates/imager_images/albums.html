@@ -4,7 +4,7 @@
 {% block content %}
 <p>Albums</p>
 <ul>
-    {% for album in albums %}
+    {% for album in album_list %}
         <li class="album">{{ album.title }}</li>
         {% if album.cover.photo.url %}
             {% thumbnail album.cover.photo "200x200" crop="center" as im %}
