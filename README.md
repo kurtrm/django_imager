@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/kurtrm/django_imager.svg?branch=front-end-4)](https://travis-ci.org/kurtrm/django_imager)
-[![Coverage Status](https://coveralls.io/repos/github/kurtrm/django_imager/badge.svg?branch=front-end-4)](https://coveralls.io/github/kurtrm/django_imager?branch=front-end-4)
+[![Build Status](https://travis-ci.org/kurtrm/django_imager.svg?branch=master)](https://travis-ci.org/kurtrm/django_imager)
+[![Coverage Status](https://coveralls.io/repos/github/kurtrm/django_imager/badge.svg?branch=master)](https://coveralls.io/github/kurtrm/django_imager?branch=master)
 
 ## Django Imager
 An image-sharing app built on Django.
