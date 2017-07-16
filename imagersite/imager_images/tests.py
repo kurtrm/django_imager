@@ -6,6 +6,7 @@ from django.urls import reverse, reverse_lazy
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, Client, RequestFactory
 from imager_images.models import Photo, Album
+from imagersite.settings import MEDIA_ROOT
 from bs4 import BeautifulSoup
 import faker
 import datetime
@@ -71,6 +72,11 @@ class PhotoTestModels(TestCase):
         photo.user = self.user
         photo.save()
         self.photo = photo
+
+    def tearDown(self):
+        """Teardown when tests complete."""
+        to_delete = os.path.join(MEDIA_ROOT, 'user_images', 'example*.jpg')
+        os.system('rm -rf ' + to_delete)
 
     def test_upload_image_adds_new_photo_instance(self):
         """New photo has been created."""
@@ -179,6 +185,11 @@ class TestPhotoView(TestCase):
         self.albums = albums
         self.client = Client()
 
+    def tearDown(self):
+        """Teardown when tests complete."""
+        to_delete = os.path.join(MEDIA_ROOT, 'user_images', 'example*.jpg')
+        os.system('rm -rf ' + to_delete)
+
     def test_image_count_correct(self):
         """Test img element count is equal to public images."""
         response = self.client.get(reverse_lazy('photos'))
@@ -212,6 +223,11 @@ class AlbumsTestModels(TestCase):
             album.photos.add(photos[idx])
             album.cover = photos[idx]
         self.albums = albums
+
+    def tearDown(self):
+        """Teardown when tests complete."""
+        to_delete = os.path.join(MEDIA_ROOT, 'user_images', 'example*.jpg')
+        os.system('rm -rf ' + to_delete)
 
     def test_delete_user_with_albums_albums_deleted(self):
         """Delete user deletes albums."""
@@ -303,6 +319,11 @@ class TestLibraryView(TestCase):
         self.photos_2 = photos_2
         self.albums = albums
         self.client = Client()
+
+    def tearDown(self):
+        """Teardown when tests complete."""
+        to_delete = os.path.join(MEDIA_ROOT, 'user_images', 'example*.jpg')
+        os.system('rm -rf ' + to_delete)
 
     def test_logged_out_user_redirects(self):
         """Logged out user redirects to login."""
@@ -413,6 +434,11 @@ class TestAlbumView(TestCase):
         self.albums = albums
         self.client = Client()
 
+    def tearDown(self):
+        """Teardown when tests complete."""
+        to_delete = os.path.join(MEDIA_ROOT, 'user_images', 'example*.jpg')
+        os.system('rm -rf ' + to_delete)
+
     def test_albums_logged_in_logged_out_users_see_same_content(self):
         """View is the same regardless of auth."""
         logged_out_response = self.client.get(reverse_lazy('albums'))
@@ -471,6 +497,11 @@ class TestAddPhotos(TestCase):
                 'static',
                 'New-smaller-Coca-Cola-can-001.jpg'), 'rb').read(),
             content_type='image/jpeg')
+
+    def tearDown(self):
+        """Teardown when tests complete."""
+        to_delete = os.path.join(MEDIA_ROOT, 'user_images', 'example*.jpg')
+        os.system('rm -rf ' + to_delete)
 
     def test_user_must_be_logged_in_to_photo_add(self):
         """User must be logged in to add photos."""
@@ -553,6 +584,11 @@ class TestPhotoEdit(TestCase):
 
         self.photos = photos
         self.client = Client()
+
+    def tearDown(self):
+        """Teardown when tests complete."""
+        to_delete = os.path.join(MEDIA_ROOT, 'user_images', 'example*.jpg')
+        os.system('rm -rf ' + to_delete)
 
     def test_user_must_be_logged_in_to_edit_album(self):
         """User must be logged in to add photo."""
@@ -643,6 +679,11 @@ class TestAddAlbums(TestCase):
         photo.user = self.user
         photo.save()
         self.photo = photo
+
+    def tearDown(self):
+        """Teardown when tests complete."""
+        to_delete = os.path.join(MEDIA_ROOT, 'user_images', 'example*.jpg')
+        os.system('rm -rf ' + to_delete)
 
     def test_user_must_be_logged_in_to_add_album(self):
         """User must be logged in to add album."""
@@ -743,6 +784,11 @@ class TestAlbumEdit(TestCase):
         self.photos = photos
         self.albums = album
         self.client = Client()
+
+    def tearDown(self):
+        """Teardown when tests complete."""
+        to_delete = os.path.join(MEDIA_ROOT, 'user_images', 'example*.jpg')
+        os.system('rm -rf ' + to_delete)
 
     def test_user_must_be_logged_in_to_edit_album(self):
         """User must be logged in to add album."""
