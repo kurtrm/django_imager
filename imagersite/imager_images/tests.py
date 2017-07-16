@@ -675,7 +675,10 @@ class TestAddAlbums(TestCase):
         )
         user.save()
         self.user = user
-
+        photo = PhotoFactory.build()
+        photo.user = self.user
+        photo.save()
+        self.photo = photo
 
     def tearDown(self):
         """Teardown when tests complete."""
