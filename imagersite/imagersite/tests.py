@@ -1,7 +1,8 @@
 """Tests for config route and registration."""
 from django.test import TestCase, Client, RequestFactory
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.contrib.auth.models import User
+from imagersite.settings import MEDIA_ROOT
 from django.core import mail
 from bs4 import BeautifulSoup
 from imagersite.views import HomeView
@@ -47,7 +48,7 @@ class PhotoFactory(factory.django.DjangoModelFactory):
             HERE,
             'static/assets',
             'camera.png'), 'rb').read(),
-        content_type='image/jpeg')
+        content_type='image/png')
 
 
 class Registration(TestCase):
@@ -151,6 +152,11 @@ class LoginLogout(TestCase):
         photos_2.save()
         self.photos_1 = photos_1
         self.photos_2 = photos_2
+
+    def tearDown(self):
+        """Teardown when tests complete."""
+        to_delete = os.path.join(MEDIA_ROOT, 'user_images', 'example*.jpg')
+        os.system('rm -rf ' + to_delete)
 
     def test_home_view_returns_status_code_200(self):
         """Test home view has status 200."""
