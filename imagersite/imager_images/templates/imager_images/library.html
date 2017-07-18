@@ -25,7 +25,7 @@
                 </a>
             {% endthumbnail %}
         {% else %}
-            {% thumbnail "assets/camera.png" "100x100" crop="center" as im %}
+            {% thumbnail "assets/camera2.jpg" "100x100" crop="center" as im %}
                 <a href='{% url "single_album" pk=album.id %}'>
                     <img  class="album" alt="default cover image: camera" src="{{ im.url }}">
                 </a>
