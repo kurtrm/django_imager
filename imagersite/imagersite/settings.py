@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'imagersite',
     'registration',
     'storages',
+    'taggit'
 ]
 
 MIDDLEWARE = [
@@ -162,6 +163,7 @@ else:
 LOGIN_REDIRECT_URL = 'profile'
 LOGOUT_REDIRECT_URL = 'home'
 
+TAGGIT_CASE_INSENSITIVE = True
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True

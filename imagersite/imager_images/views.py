@@ -3,7 +3,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse_lazy
 from .models import Photo, Album
 
 
@@ -71,7 +71,7 @@ class PhotoCreate(CreateView):
     """Class-based view to create new photos."""
 
     model = Photo
-    fields = ['title', 'description', 'published', 'photo']
+    fields = ['title', 'description', 'published', 'photo', 'tags']
     success_url = reverse_lazy('library')
 
     def form_valid(self, form):
@@ -86,7 +86,7 @@ class PhotoEdit(UpdateView):
     """Class-based view to edit photos."""
 
     model = Photo
-    fields = ['title', 'description', 'published', 'photo']
+    fields = ['title', 'description', 'published', 'photo', 'tags']
     success_url = reverse_lazy('library')
 
     def form_valid(self, form):
@@ -141,3 +141,19 @@ class AlbumEdit(UpdateView):
         self.object.user = self.request.user
         self.object.save()
         return super(UpdateView, self).form_valid(form)
+
+
+class TagListView(ListView):
+    """The listing for tagged books."""
+
+    template_name = "imager_images/photos.html"
+
+    def get_queryset(self):
+        """Filter queryset by slug."""
+        return Photo.objects.filter(tags__slug=self.kwargs.get("slug")).all()
+
+    def get_context_data(self, **kwargs):
+        """Return the context with the given tags."""
+        context = super(TagListView, self).get_context_data(**kwargs)
+        context["tag"] = self.kwargs.get("slug")
+        return context

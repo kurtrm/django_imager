@@ -6,6 +6,11 @@
         {% thumbnail photo.photo "500x500" crop="center" as im %}
             <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
         {% endthumbnail %}
+        {% if photo.tags.exists %}
+            {% for tag in photo.tags.names %}
+            <p>{{ tag }}</p>
+            {% endfor %}
+        {% endif %}
     {% else %}
         <p>Photo doesn't exist.</p>
     {% endif %}
