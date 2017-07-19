@@ -1,0 +1,43 @@
+{% extends 'imagersite/base.html' %}
+{% load static %}
+{% load thumbnail %}
+{% block content %}
+<h3>Photos</h3>
+<ul>
+    {% for photo in photos %}
+        <li class="photo">{{ photo.title }}</li>
+        {% thumbnail photo.photo "100x100" crop="center" as im %}
+            <a href='{% url "single_photo" pk=photo.id %}'>
+                <img class="photo" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+            </a>
+        {% endthumbnail %}
+        <a href='{% url "photo_edit" pk=photo.id %}'><button>Update photo</button></a>
+    {% endfor %}
+    {% if tags %}
+    <h4>Tags</h4>
+        {% for tag in tags %}
+            <a href='{% url "tagged_images" slug=tag %}'>{{ tag }}</a>
+        {% endfor %}
+    {% endif %}
+</ul>
+<h3>Albums</h3>
+<ul>
+    {% for album in albums %}
+        <li class="album">{{ album.title }}</li>
+        {% if album.cover.photo.url %}
+            {% thumbnail album.cover.photo "100x100" crop="center" as im %}
+                <a href='{% url "single_album" pk=album.id %}'>
+                    <img class="album" alt="album cover" src="{{ im.url }}" />
+                </a>
+            {% endthumbnail %}
+        {% else %}
+            <a href='{% url "single_album" pk=album.id %}'>
+                <img class="album" alt="default cover image: camera" src="{% static 'assets/camera.png' %}">
+            </a>
+        {% endif %}
+        <a href='{% url "album_edit" pk=album.id %}'><button>Update album</button></a>
+    {% endfor %}
+</ul>
+<a href="{% url 'photo_add' %}"><button>Add photo</button></a>
+<a href="{% url 'album_add' %}"><button>Add album</button></a>
+{% endblock %} 

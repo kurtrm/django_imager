@@ -99,3 +99,11 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# DS_Store
+*.DS_Store
+
+imagersite/imagersite/media/*
+imagersite/imagersite/media/cache
+!media/.gitkeep
+!media/assets/camera.png

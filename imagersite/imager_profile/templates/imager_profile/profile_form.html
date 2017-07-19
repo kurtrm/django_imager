@@ -1,0 +1,39 @@
+{%  extends 'imagersite/base.html' %}
+{% block content %}
+<form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <p>
+        <label for="username">Username: </label>
+        <input type="text" name="username" value={{ user.username }}>
+    </p>
+    <p>
+        <label for="email">Email: </label>
+        <input type="text" name="email" value={{ user.email }}>
+    </p>
+    <p>
+        <label for="first_name">First name: </label>
+        <input type="text" name="first_name" value={{ user.first_name }}>
+    </p>
+    <p>
+        <label for="last_name">Last name: </label>
+        <input type="text" name="last_name" value={{ user.last_name }}>
+    </p>
+    <p>
+        <label for="location">Location: </label>
+        <input type="text" name="location" value={{ user.imagerprofile.location }}>
+    </p>
+    <p>
+        <label for="age">Age: </label>
+        <input type="number" name="age" value={{ user.imagerprofile.age }}>
+    </p>
+    <p>
+        <label for="job">Job: </label>
+        <input type="text" name="job" value={{ user.imagerprofile.job }}>
+    </p>
+    <p>
+        <label for="website">Site: </label>
+        <input type="url" name="website" value={{ user.imagerprofile.website }}>
+    </p>
+    <input type="submit" value="Update" />
+</form>
+{% endblock %}

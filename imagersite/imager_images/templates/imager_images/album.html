@@ -1,0 +1,29 @@
+{% extends 'imagersite/base.html' %}
+{% load thumbnail %}
+{% block content %}
+<section class="album">
+    {% if album %}
+        <p class="album-title">{{ album.title }}</p>
+        <ul>
+            {% if album_photos %}
+                {% for photo in album_photos %}
+                    <li>{{ photo.title }}</li>
+                    {% thumbnail photo.photo "200x200" crop="center" as im %}
+                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                    {% endthumbnail %}
+                {% endfor %}
+        {% if tags %}
+            <h4>Tags</h4>
+            {% for tag in tags %}
+                <a href='{% url "tagged_images" slug=tag %}'>{{ tag }}</a>
+            {% endfor %}
+        {% endif %}
+        </ul>
+            {% else %}
+                <p>No images in this album.</p>
+            {% endif %}
+    {% else %}
+        <p>No album here.</p>
+    {% endif %}
+</section>
+{% endblock %} 

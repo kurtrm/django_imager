@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Imager</title>
+</head>
+<body>
+    <header>
+        <nav>
+            {% block login%}
+                {% if user.is_authenticated %}
+                    <p>Hi, <a href='{% url "library" %}'>{{ user.username }}</a></p>
+                    <a href='{% url "logout" %}'>
+                        <button>Logout</button>
+                    </a>
+                    {% else %}
+                    <button>
+                        <a href='{% url "login" %}'>Login</a>
+                    </button>
+                    <button>
+                        <a href='{% url "registration_register" %}'>Register</a>
+                    </button>
+                {% endif %}
+            {% endblock %}
+        </nav>
+    </header>
+    <h1><a href='{% url "home" %}'>Imager</a></h1>
+    {% block content %}
+    {% endblock %}
+</body>
+</html>

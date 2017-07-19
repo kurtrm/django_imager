@@ -1,0 +1,20 @@
+{% extends 'imagersite/base.html' %}
+{% load static %}
+{% load thumbnail %}
+{% block content %}
+<section class="albums">
+    <p>Albums</p>
+    <ul>
+        {% for album in album_list %}
+            <li class="album">{{ album.title }}</li>
+            {% if album.cover.photo.url %}
+                {% thumbnail album.cover.photo "200x200" crop="center" as im %}
+                    <img src="{{ im.url }}" />
+                {% endthumbnail %}
+            {% else %}
+                <img alt="default cover image: camera" src="{% static 'assets/camera.png' %}">
+            {% endif %}
+        {% endfor %}
+    </ul>
+</section>
+{% endblock %} 

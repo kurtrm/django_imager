@@ -1,0 +1,11 @@
+{% extends 'imagersite/base.html' %}
+{% load static %}
+{% block content %}
+    {{ content }}
+    <p>Welcome to Imager, your place to store and share photos.</p>
+    {% if image %}
+        <img src="{{ image|random }}" />
+    {% else %}
+        <img src="{% static  'assets/jerry-kiesewetter-192478.jpg' %}" />
+    {% endif %}
+ {% endblock %}

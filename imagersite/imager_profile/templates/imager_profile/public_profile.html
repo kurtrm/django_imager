@@ -1,0 +1,35 @@
+{% extends 'imagersite/base.html' %}
+{% load thumbnail %}
+{% load static %}
+
+{% block content %}
+<section class="profile">
+    {% if imager_user %}
+        <p>{{ username }}</p>
+        <p>Photos</p>
+        <ul>
+            {% for photo in photos_pub %}
+                <li class="photo-title">{{ photo.title }}</li>
+                {% thumbnail photo.photo "100x100" crop="center" as im %}
+                    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                {% endthumbnail %}
+            {% endfor %}
+        </ul>
+        <p>Albums</p>
+        <ul>
+            {% for album in albums_pub %}
+                <li class="album-title">{{ album.title }}</li>
+                {% if album.cover.photo.url %}
+                    {% thumbnail album.cover.photo "100x100" crop="center" as im %}
+                        <img src="{{ im.url }}" />
+                    {% endthumbnail %}
+                {% else %}
+                    <img alt="default cover image: camera" src="{% static 'assets/camera.png' %}">
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>user doesn't exist</p>
+    {% endif %}
+</section>
+{% endblock %} 
