@@ -2,7 +2,7 @@
 {% load static %}
 {% load thumbnail %}
 {% block content %}
-<p>Photos</p>
+<h3>Photos</h3>
 <ul>
     {% for photo in photos %}
         <li class="photo">{{ photo.title }}</li>
@@ -13,8 +13,14 @@
         {% endthumbnail %}
         <a href='{% url "photo_edit" pk=photo.id %}'><button>Update photo</button></a>
     {% endfor %}
+    {% if tags %}
+    <h4>Tags</h4>
+        {% for tag in tags %}
+            <a href='{% url "tagged_images" slug=tag %}'>{{ tag }}</a>
+        {% endfor %}
+    {% endif %}
 </ul>
-<p>Albums</p>
+<h3>Albums</h3>
 <ul>
     {% for album in albums %}
         <li class="album">{{ album.title }}</li>
@@ -25,11 +31,9 @@
                 </a>
             {% endthumbnail %}
         {% else %}
-            {% thumbnail "assets/camera2.jpg" "100x100" crop="center" as im %}
-                <a href='{% url "single_album" pk=album.id %}'>
-                    <img  class="album" alt="default cover image: camera" src="{{ im.url }}">
-                </a>
-            {% endthumbnail %}
+            <a href='{% url "single_album" pk=album.id %}'>
+                <img alt="default cover image: camera" src="{% static 'assets/camera.png' %}">
+            </a>
         {% endif %}
         <a href='{% url "album_edit" pk=album.id %}'><button>Update album</button></a>
     {% endfor %}

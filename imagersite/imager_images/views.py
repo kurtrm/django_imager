@@ -18,6 +18,7 @@ class LibraryView(TemplateView):
         username = context['view'].request.user
         context['photos'] = Photo.objects.filter(user=username)
         context['albums'] = Album.objects.filter(user=username)
+        context['tags'] = set([tag for photo in context['photos'] for tag in photo.tags.names()])
         return context
 
 
@@ -40,6 +41,12 @@ class PhotoDetailView(DetailView):
     template_name = 'imager_images/photo.html'
     model = Photo
 
+    def get_context_data(self, **kwargs):
+        """Build context for single photos."""
+        context = super(PhotoDetailView, self).get_context_data(**kwargs)
+        import pdb; pdb.set_trace()
+        context['tagged_photos'] = [photo.photo for tag in context['photo'].tags.names() for photo in Photo.objects.filter(tags=tag)]
+        return context
 
 class AlbumListView(ListView):
     """Generic view for photo lists."""
@@ -64,6 +71,7 @@ class AlbumDetailView(DetailView):
         """Build context to create view."""
         context = super(AlbumDetailView, self).get_context_data(**kwargs)
         context['album_photos'] = context['album'].photos.filter(published='PB')
+        context['tags'] = set([tag for photo in context['album_photos'] for tag in photo.tags.names()])
         return context
 
 
@@ -145,12 +153,14 @@ class AlbumEdit(UpdateView):
 
 class TagListView(ListView):
     """The listing for tagged books."""
-
     template_name = "imager_images/photos.html"
 
     def get_queryset(self):
         """Filter queryset by slug."""
-        return Photo.objects.filter(tags__slug=self.kwargs.get("slug")).all()
+        # import pdb; pdb.set_trace()
+        return (Photo.objects.filter(tags__slug=self.kwargs.get("slug"))
+                             .filter(published='PB')
+                             .all())
 
     def get_context_data(self, **kwargs):
         """Return the context with the given tags."""

@@ -9,7 +9,8 @@ from .views import (
     PhotoCreate,
     PhotoEdit,
     AlbumCreate,
-    AlbumEdit
+    AlbumEdit,
+    TagListView
 )
 
 urlpatterns = [
@@ -19,6 +20,7 @@ urlpatterns = [
     url(r'^photos/add/$', PhotoCreate.as_view(), name='photo_add'),
     url(r'^photos/$', PhotoListView.as_view(), name='photos'),
     url(r'^photos/(?P<pk>\w+)/edit/$', PhotoEdit.as_view(), name='photo_edit'),
+    url(r'^photos/tag/(?P<slug>[-\w]+)/$', TagListView.as_view(), name="tagged_images"),
     url(r'^albums/(?P<pk>\d+)/$', AlbumDetailView.as_view(),
         name='single_album'),
     url(r'^albums/$', AlbumListView.as_view(), name='albums'),

@@ -6,11 +6,16 @@
         {% thumbnail photo.photo "500x500" crop="center" as im %}
             <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
         {% endthumbnail %}
-        {% if photo.tags.exists %}
-            {% for tag in photo.tags.names %}
-            <p>{{ tag }}</p>
-            {% endfor %}
-        {% endif %}
+    {% if tagged_photos %}
+    <h4>Tags</h4>
+        {% for tag in tagged_photos %}
+            {% thumbnail tag.photo "100x100" crop="center" as im %}
+                <a href='{% url "tagged_images" slug=tag %}'>
+                    <img class="album" alt="tagged photo" src="{{ im.url }}" />
+                </a>
+            {% endthumbnail %}
+        {% endfor %}
+    {% endif %}
     {% else %}
         <p>Photo doesn't exist.</p>
     {% endif %}
