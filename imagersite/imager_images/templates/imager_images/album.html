@@ -12,6 +12,12 @@
                         <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                     {% endthumbnail %}
                 {% endfor %}
+        {% if tags %}
+            <h4>Tags</h4>
+            {% for tag in tags %}
+                <a href='{% url "tagged_images" slug=tag %}'>{{ tag }}</a>
+            {% endfor %}
+        {% endif %}
         </ul>
             {% else %}
                 <p>No images in this album.</p>

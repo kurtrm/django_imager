@@ -367,6 +367,7 @@ class TestLibraryView(TestCase):
         response = self.client.get(reverse_lazy('library'))
         html = BeautifulSoup(response.content, 'html5lib')
         album_cover = html.find('img', 'album')
+        # import pdb; pdb.set_trace()
         tags = album_cover.attrs
         self.assertTrue(tags['alt'] == 'default cover image: camera')
 

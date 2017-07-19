@@ -2,6 +2,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.encoding import python_2_unicode_compatible
+from taggit.managers import TaggableManager
+
 
 
 @python_2_unicode_compatible
@@ -13,6 +15,8 @@ class Photo(models.Model):
         ('PV', 'private'),
         ('SH', 'shared'),
     )
+
+    tags = TaggableManager(blank=True)
 
     title = models.CharField(max_length=100, default='')
     description = models.CharField(max_length=255, default='')

@@ -1,5 +1,6 @@
 """."""
 from imager_images.models import Photo, Album
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from imager_profile.models import ImagerProfile
 from django.views.generic.base import TemplateView
@@ -9,7 +10,7 @@ from django.http import HttpResponseRedirect
 from .forms import UserForm
 
 
-class ProfileView(TemplateView):
+class ProfileView(LoginRequiredMixin, TemplateView):
     """Class based view for private profiles."""
 
     template_name = 'imager_profile/profile.html'
