@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.urls import reverse, reverse_lazy
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import TestCase, Client, RequestFactory
+from django.test import TestCase, Client
 from imager_images.models import Photo, Album
 from imagersite.settings import MEDIA_ROOT
 from bs4 import BeautifulSoup
