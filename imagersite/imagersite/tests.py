@@ -1,6 +1,6 @@
 """Tests for config route and registration."""
 from django.test import TestCase, Client, RequestFactory
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.contrib.auth.models import User
 from imagersite.settings import MEDIA_ROOT
 from django.core import mail
