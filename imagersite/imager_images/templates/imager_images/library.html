@@ -25,11 +25,9 @@
                 </a>
             {% endthumbnail %}
         {% else %}
-            {% thumbnail "assets/camera.png" "100x100" crop="center" as im %}
                 <a href='{% url "single_album" pk=album.id %}'>
-                    <img  class="album" alt="default cover image: camera" src="{{ im.url }}">
+                    <img  class="album" alt="default cover image: camera" src="{% static 'assets/camera.png' %}">
                 </a>
-            {% endthumbnail %}
         {% endif %}
         <a href='{% url "album_edit" pk=album.id %}'><button>Update album</button></a>
     {% endfor %}

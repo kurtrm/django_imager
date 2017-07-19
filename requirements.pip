@@ -1,14 +1,14 @@
 appnope==0.1.0
 beautifulsoup4==4.6.0
+boto==2.48.0
 bs4==0.0.1
 decorator==4.0.11
 Django==1.11.2
 django-registration==2.2
+django-storages==1.6.3
 factory-boy==2.8.1
 Faker==0.7.17
 html5lib==0.999999999
-ipython
-ipython-genutils==0.2.0
 jedi==0.10.2
 olefile==0.44
 pexpect==4.2.1
