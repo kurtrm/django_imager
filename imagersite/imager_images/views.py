@@ -1,5 +1,6 @@
 """."""
 from django.views.generic.base import TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView
@@ -7,7 +8,7 @@ from django.urls import reverse_lazy
 from .models import Photo, Album
 
 
-class LibraryView(TemplateView):
+class LibraryView(LoginRequiredMixin, TemplateView):
     """List view for both albums and phots."""
 
     template_name = 'imager_images/library.html'
@@ -41,12 +42,6 @@ class PhotoDetailView(DetailView):
     template_name = 'imager_images/photo.html'
     model = Photo
 
-    def get_context_data(self, **kwargs):
-        """Build context for single photos."""
-        context = super(PhotoDetailView, self).get_context_data(**kwargs)
-        import pdb; pdb.set_trace()
-        context['tagged_photos'] = [photo.photo for tag in context['photo'].tags.names() for photo in Photo.objects.filter(tags=tag)]
-        return context
 
 class AlbumListView(ListView):
     """Generic view for photo lists."""
@@ -55,7 +50,7 @@ class AlbumListView(ListView):
     model = Album
 
     def get_context_data(self, **kwargs):
-        """."""
+        """Filter albums by published."""
         context = super(AlbumListView, self).get_context_data(**kwargs)
         context['album_list'] = context['album_list'].filter(published='PB')
         return context
@@ -75,7 +70,7 @@ class AlbumDetailView(DetailView):
         return context
 
 
-class PhotoCreate(CreateView):
+class PhotoCreate(LoginRequiredMixin, CreateView):
     """Class-based view to create new photos."""
 
     model = Photo
@@ -90,7 +85,7 @@ class PhotoCreate(CreateView):
         return super(CreateView, self).form_valid(form)
 
 
-class PhotoEdit(UpdateView):
+class PhotoEdit(LoginRequiredMixin, UpdateView):
     """Class-based view to edit photos."""
 
     model = Photo
@@ -105,7 +100,7 @@ class PhotoEdit(UpdateView):
         return super(UpdateView, self).form_valid(form)
 
 
-class AlbumCreate(CreateView):
+class AlbumCreate(LoginRequiredMixin, CreateView):
     """Class-based view to create new albums."""
 
     model = Album
@@ -128,7 +123,7 @@ class AlbumCreate(CreateView):
         return super(CreateView, self).form_valid(form)
 
 
-class AlbumEdit(UpdateView):
+class AlbumEdit(LoginRequiredMixin, UpdateView):
     """Class-based view to create new albums."""
 
     model = Album
@@ -153,6 +148,7 @@ class AlbumEdit(UpdateView):
 
 class TagListView(ListView):
     """The listing for tagged books."""
+
     template_name = "imager_images/photos.html"
 
     def get_queryset(self):

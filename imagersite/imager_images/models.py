@@ -5,6 +5,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from taggit.managers import TaggableManager
 
 
+
 @python_2_unicode_compatible
 class Photo(models.Model):
     """Create a photo model."""
