@@ -897,6 +897,11 @@ class TestTags(TestCase):
         self.photos = photos
         self.client = Client()
 
+    def tearDown(self):
+        """Teardown when tests complete."""
+        to_delete = os.path.join(MEDIA_ROOT, 'user_images', 'example*.jpg')
+        os.system('rm -rf ' + to_delete)
+
     def test_tag_exists_on_photo_object(self):
         """Test tag is assigned correctly to photo object."""
         self.assertTrue('first' in self.photos[0].tags.names())
