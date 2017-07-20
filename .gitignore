@@ -103,7 +103,7 @@ ENV/
 # DS_Store
 *.DS_Store
 
-imagersite/media/*
-imagersite/media/cache
+imagersite/imagersite/media/*
+imagersite/imagersite/media/cache
 !media/.gitkeep
 !media/assets/camera.png
