@@ -42,6 +42,13 @@ class PhotoDetailView(DetailView):
     template_name = 'imager_images/photo.html'
     model = Photo
 
+    def get_context_data(self, **kwargs):
+        """Build context to create view."""
+        # import pdb; pdb.set_trace()
+        context = super(PhotoDetailView, self).get_context_data(**kwargs)
+        context['tags'] = context['photo'].tags.names()
+        return context
+
 
 class AlbumListView(ListView):
     """Generic view for photo lists."""
