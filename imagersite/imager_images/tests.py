@@ -872,3 +872,49 @@ class TestAlbumEdit(TestCase):
         self.assertEqual(updated_album.description, 'Brand new description')
         self.assertEqual(updated_album.cover.id, photo_cover)
         self.assertEqual(updated_album.published, 'PV')
+
+
+class TestTags(TestCase):
+    """Class for testing tags."""
+
+    def setUp(self):
+        """Create a user and photos."""
+        user = User(
+            username='morgan',
+            email='morgan@morgan.com'
+        )
+        user.save()
+        self.user = user
+
+        photos = [PhotoFactory.build() for i in range(10)]
+        for photo in photos:
+            photo.user = user
+            photo.published = 'PB'
+            photo.save()
+
+        photos[0].tags.add('first')
+
+        self.photos = photos
+        self.client = Client()
+
+    def tearDown(self):
+        """Teardown when tests complete."""
+        to_delete = os.path.join(MEDIA_ROOT, 'user_images', 'example*.jpg')
+        os.system('rm -rf ' + to_delete)
+
+    def test_tag_exists_on_photo_object(self):
+        """Test tag is assigned correctly to photo object."""
+        self.assertTrue('first' in self.photos[0].tags.names())
+
+    def test_tag_updates_on_model(self):
+        """Test tag is updated correctly to photo object."""
+        self.photos[0].tags.add('new')
+        self.assertTrue('new' in self.photos[0].tags.names())
+
+    def test_tags_appear_on_detail_page(self):
+        """Test tags appear on detail page."""
+        photo_id = self.photos[0].id
+        response = self.client.get(reverse_lazy('single_photo', kwargs={'pk': str(photo_id)}))
+        html = BeautifulSoup(response.content, 'html5lib')
+        tagged_anchor = html.find('a', 'tag')
+        self.assertEqual('first', tagged_anchor.text)
