@@ -44,10 +44,12 @@ INSTALLED_APPS = [
     'sorl.thumbnail',
     'imager_images',
     'imager_profile',
+    'imager_api',
     'imagersite',
     'registration',
     'storages',
-    'taggit'
+    'taggit',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
