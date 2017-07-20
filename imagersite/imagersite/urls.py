@@ -30,7 +30,8 @@ urlpatterns = [
     url(r'^logout/$', auth_views.LogoutView.as_view(
         template_name='imagersite/home.html'), name='logout'),
     url(r'^profile/', include('imager_profile.urls')),
-    url(r'^images/', include('imager_images.urls'))
+    url(r'^images/', include('imager_images.urls')),
+    url(r'^api/v1/', include('imager_api.urls'))
 ]
 
 if settings.DEBUG:

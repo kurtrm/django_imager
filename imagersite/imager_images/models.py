@@ -30,7 +30,8 @@ class Photo(models.Model):
     user = models.ForeignKey(
         User,
         null=False,
-        on_delete=models.CASCADE)
+        on_delete=models.CASCADE,
+        related_name='photos')
     photo = models.ImageField(
         upload_to='user_images',
         null=True
